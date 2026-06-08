@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+.env.*
+
+# Node / TypeScript (dashboard)
+node_modules/
+.next/
+out/
+.cache/
+.DS_Store
+Thumbs.db
+
+# FAISS / model artifacts
+faiss_index/
+*.faiss
+*.pkl
+*.npy
+
+# Editor
+.vscode/
+.idea/
+
+# Logs and local state
+*.log
+logs/
