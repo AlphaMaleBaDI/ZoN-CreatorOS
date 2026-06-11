@@ -37,3 +37,5 @@ faiss_index/
 # Logs and local state
 *.log
 logs/
+workspace.zip
+

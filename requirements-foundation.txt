@@ -1,0 +1,9 @@
+# CreatorOS Foundation Dependencies
+# Target: Python 3.12
+# Minimum-version pins only (>=). No exact locks.
+
+fastapi>=0.115
+pydantic>=2.10
+python-dotenv>=1.0
+
+openai>=1.0

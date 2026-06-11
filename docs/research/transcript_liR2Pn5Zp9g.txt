@@ -1,0 +1,420 @@
+Hi everyone! Thank you. All right. So we're going to kick things off. I'm going to introduce
+a little bit of the problem and then talk about mojo Max today. So I just want to start out
+with a little bit of a warning here. So many things in
+AI are hard to understand because so much is changing,
+so many claims are being made. And so today we're going to be talking
+about things that only exist today. The only work today that you can download,
+you can use. This is not a vision talk. This is real. And so if you'd like please
+go download our stuff and use it today. Okay. So what we are doing at Modular,
+we're building a native AI software stack. So AI is not a new thing. Much of the world's
+AI software has been around for ten years. Plus TensorFlow, PyTorch,
+all these things. We think that AI is so important that we want to actually reinvest
+in the software stack, do hard work at the compilers
+and the systems and the software and the algorithms layers to really enable
+and unlock a new generation of portable AI compute. So what do we see
+when we look at the world out there? Well, there's a lot of really great
+software out there. ROCm. It's amazing. It's open source. But it runs on one vendor's hardware. There's other things like OpenCL thing I worked on years ago
+that tried to unify compute, but it gave up all the performance
+and it's not very usable. And things like this. There's also other cool things like Triton
+that lots of people use and love. It's really amazing
+at making it more usable and it gives you portability, but it also gives up a performance
+as part of the trade off. Now this is I think I software as we know
+today, lots of trade offs, lots of different things. They're all built by different groups
+and different people. What we're trying to do is we're trying to build something
+that unifies this world. And so we're trying to build something
+that pulls together the best of usability, because we want developers everywhere
+to be able to program GPUs. Performance, because, of course, TCO cost speed
+or latency, all these things matter. So much for AI and of course, portability,
+because we want to see innovation everywhere and we want lots of people
+to be able to participate. And we think the AMD, for example,
+has amazing GPUs with amazing flops, and we want people to be able to use them,
+no matter what, what color their hardware is. So if
+you zoom out and you look at our stack, I'm not going to deep dive
+into all the different things. What we've done is we've taken a very first principles approach to this,
+and where there's a lot of different AI software stacks that are built
+out of these layer technology that have been accumulated in
+AI for many years. What we've done is we built a novel
+stack from the ground up. And so this means
+that the matrix multiplications are written in Mojo,
+which we'll talk about today all the way up to the higher level
+stack, and models and applications and serving and cluster management,
+all this kind of stuff. And it's designed
+vertically integrated to just work. Now, of course, our company is named modular
+and so we yes, we integrate with PyTorch. Yes, we integrate
+with all the existing systems. You can take things a la carte
+and that's fantastic. But what we really want to see is we want to see a new world where things in
+AI work, they work the first time. They don't require
+crazy amounts of configuration, and only by going all the way back to the basics
+and rebuilding the software stack from first principles,
+can you solve some of these complexity and other problems
+that the world is struggling with? So Mojo, it's a new programing language. And so you might ask
+why build a new programing language. Isn't that crazy? Well, the challenge out there
+is that you kind of have to do crazy things
+to be able to move the world forward. And so C-plus Plus
+is one of the most widely used languages, first of all, in the world,
+but also in GPUs. If you use C
+plus plus you've used templates. And if you use templates,
+you want to stab your eyes up. Right. And so the compile time, the usability,
+the ecosystem I love C plus plus, but I also hate C plus plus. It's time to move the world forward. Now lots of folks are trying to make
+Python domain specific language thingies. There's lots of examples of this. They're great and they can be great. But the problem is,
+is that they don't work with the buggers. And profilers are not real languages. And so they look good on a slide, but they don't actually work well,
+and they don't feel good to a developer. And so if you're willing to do the work
+of building entirely new programing language,
+which, by the way, is crazy, you get these benefits
+of having something that gives you performance,
+usability, and portability on one. So what is Mojo? Well, just at a glance, I'll introduce
+it. It's a pythonic language. And so the syntax looks like Python
+if you have muscle memory, if you have AI coding tools,
+a lot of stuff just translates over. And it's super familiar. And I think a lot of people love Python
+and so why mess with that? Of course,
+Python is not great for performance, it's not great for GPUs, it's
+not great for lots of other things. And so what we've done
+is we built this new language that takes the best of Python,
+but it's a systems programing language. GPUs are about performance. We want to
+mark the full power of the hardware. You have to talk to tensor cores. You need this crazy advanced hardware
+in order to be able to get AI. And so what we're doing is we're building this new ecosystem
+around this new language and then building the layers on top of it
+now, which is predominantly open source. You can go download it. It runs on Linux,
+Mac, windows, all this kind of stuff. By the way, we have hundreds of thousands
+lines of GPU kernels. Please check it out on GitHub. We also have an amazing community and
+throughout this talk I'll include links. And so you can see examples of what some of the random people and random
+amazing people in our community are doing. And so please check it out,
+not just from our site, but on other people's websites as well. Now, I
+talked about this a little bit before. Why build a new language?
+Well, it's all about tools. It's about developer experience,
+about productivity. It's about being able to move fast, which is something that everybody
+in AI really needs. And that's
+what we're all like struggling to do. And so yes, we get integrated
+debugger experiences, we get profilers, we get amazing LSP integration
+with your editor and things like this. Because as a language
+like these tools know about the language. And that's something that's very different from something that looks like Python, but it's actually just
+kind of embedded into it. Now I mentioned performance. Well, 
+what do I mean by that. Well, just actually quite fast. So when you talk Python people start thinking about okay,
+well is it faster than Python? And the answer is unless you're doing something really wrong,
+obviously it's faster than Python. We measure and said from what
+is the speed of light of the hardware? Like we want to be faster than ROCm
+we want to be faster than Cuda, we want to be faster than C in C plus. And so we do this by innovating
+not just in syntax, but in the compiler and the architecture of the system,
+how all these things plug together. And so of course we bring best in class
+techniques like SIMD on a CPU, Numa support and things like this. But we make it accessible to programmers
+because, well, people want power. Often they don't want all the complexity,
+fragmentation, all the details, thrust in there faster
+and they don't want to deal with it. Now we're here to talk about GPUs. This is an AI event, of course,
+and AI is all about GPUs. And so you can use mojo to program
+GPUs from multiple vendors, including AMD. Very excited about that. We bring the familiar
+GPU programing models to bear. And so if you're used to thread indexes
+and things like this, you'll feel perfectly at home. And if you're used to writing ROCm kernels or
+CUDA kernels, then what you'll initially feel is like Mojo is just it feels like C
+plus plus, but it's in a Python syntax. Well, this is fantastic
+because it's really easy to learn. You can bring all the idioms that you know
+and you can bring it over. And again, you don't get C
+plus plus template error messages, but you get the power of generic programing
+and things like this. Mojo is also not limited.
+So it's not just Tubby's programing. So yes, we do that. It's also about general purpose
+AI applications. It's about other things
+you want to do with the GPU. Like, yes,
+you can write a ray tracer in Mojo. You get the full power of your hardware. Now, when I talk about the full power
+of the silicon, GPUs are complicated. Let's not ignore
+that. Let's not try to sugarcoat that. And so you have to handle this complexity
+somehow. Some people say we will have a magic compiler,
+and we'll put it in the compiler and be a black box
+and just trust us, it's going to be great. Well, it's great
+until you have to look at compiler IR dumps to debug what went wrong. Right? This is the unspoken
+truth of many of these systems. Mojo's approach is completely different. We don't bury magic into the compiler. What we do instead is we enable programmers to have access
+to the full power of the GPU. So yeah, you can use inline instructions
+for AMD. You can go all the way down to the silicon
+and have full control over the system. But then you as a programmer
+get to build abstractions, libraries. Now you can see the source code for. And so if something goes wrong
+you can debug it, you can step into it, which is a completely different
+developer experience. Now I'm not gonna spend too much time talking about it,
+but Mojo is also very unique because it's a programing language designed for very fancy MLIR compiler
+things. I'm not going to nerd out about compilers
+today. Well, one of those important things
+is called a graph compiler. A graph compiler is what takes your
+AI model. It takes all the kernels you write,
+and it turns those kernels into the best thing
+possible for that model. Because a lot of kernels you want to write should be generic, they should be reusable,
+they should work with lots of different shapes and different data types
+and things like this. But when you run it,
+you want full performance. And so by integrating Mojo,
+the source code and the compiler and the stack with the graph compiler,
+what we get is this beautiful world where we can have
+a single source of truth for algorithms. You can have one implementation of,
+for example, Matmul that can scale across
+multiple different hardware, different generations, different data
+types, and all of these kinds of things. But you get specialized implementations,
+which makes managing and scaling AI a completely different ball game
+than what we're used to  with hundreds
+of different permutations of kernels and trying to find them all
+and manage them and all the nightmare
+that we're used to. Now, one of the other cool
+things about this is that you can call this stuff
+directly from Python. And so yes, we integrate with PyTorch. You can work directly with these kernels
+and all the ways that you're used to. And so we love Python for it. It's
+good for. But when you want performance
+modules your thing. Now let me tell you the secret weapon. But we're not going to keep it a secret. Of course, the thing that makes mojo
+possible is it's called metaprogramming. And so if you're familiar with C
+plus plus templates, think about the good parts of that,
+like the power gives you. And let's take that power
+and remove all the pain and suffering. And so I'll talk a little bit about this,
+in the time we have today. But the key thing to know about metaprogramming
+and mojo is that it is just programing. And so if you think about something like C
+plus plus you have four loops and code, but then you have templates and so you have two different worlds
+that are trying to live together. So you can write a generic program. And then actually the program
+and some measure removes that difference. It's the same code that you used
+for compile time and at runtime. And again, this gives
+you power as a programmer to invent new kinds of abstractions
+and effectively extend the compiler quotes by writing libraries
+and writing logic code. Let's talk about some of the ways
+that how that works. Well. So in Mojo, functions have basically two different kinds of things
+that they can take. You have arguments. Arguments are normal things or the dynamic values
+that get passed into your program. And then you have what we call parameters. These are things known at compile time. And so values
+and mojo can have two different lives. One is provably known at compile time
+and one is at runtime provably dynamic. And now what Mojo allows you to do
+with a very simple approach is to have, you know, plus function calls, recursion,
+all these things. Of course, they work at runtime
+and of course they work at compile time. And you have one thing to manage. Well,
+this makes everything simpler. This makes it so you can define
+really advanced compile time features. For example, working with crazy advanced
+layouts you need for tensor cores. Without having all this complexity
+and without the terrible error messages that we're used to from C plus plus. Now Mojo
+has a very powerful generic system. And so if you're familiar with languages like rust
+and things like this, mojo has traits. And this makes it very easy to be able
+to generate very good error messages when you do things that are wrong, because you're not having to instantiate
+all the templates to figure out what went wrong,
+you can actually report the error right at the site
+if you do something wrong. And so this gives you
+very powerful new ways to model programs. And so this is why people love
+writing mojo. So what you're doing is you're taking
+all the good things you love about Python. You're building in metaprogramming. And then you're giving very expressive
+powers to library developers to invent new abstractions so that they can solve problems
+that only they understand and they know the best, not just
+some compiler person thinks is good. So when you get to playing this forward
+and I start talking about cool, I have functions like take compile time
+values. Well, we want to be able to enable
+metaprogramming. This is very generic. And so in module this is super simple. Again
+you don't have templates and weird things with type defs and using declarations
+and stuff like this. You get one keyword called alias.
+Aliases like a compile time variable. And so because types are just compile time
+variables, it serves the purpose of something like a typedef. But you can do very powerful things here. And so in this example
+we have a Fibonacci function. It looks like a very normal function
+you defined on line ten. You can totally call that a runtime that works just like you expect. Go does recursion. Awesome. Well, you can also on line
+19 calls that compile time. And what happens is Mojo guarantees
+that function is called it compile time. And the answer is put into your binary. And so you have full control
+of what the compiler is doing and full ability to express lots of fancy algorithms
+that go way beyond Fibonacci, of course. And this power,
+this flexibility is what empowers you as a library developer to take
+advantage of this very fancy system. Now you play this forward. Mojo talks to things like low level assembly
+and MLIR and very fancy compiler stuff, and we combine that
+with powerful metaprogramming. What enables you to do is write
+very generic code that is also portable, and write that
+in a very straightforward way nd libraries and then you can build things
+like a barrier function and have very simple, very generic algorithms that then have
+a tremendous amount of power inside of it. And again, the cool thing about this is
+you get that power, you get that flexibility, you get the configurability,
+but there's no magic. And so if you want to step into this
+in a debugger, you can totally do that. It's just that easy. All right. Well, let me tell you about, this
+very fancy thing called Python out there. Python is great.
+Here's a fire breathing python, I guess. I don't know what this is, but,
+we do love Python, right? And we talk a lot about GPUs, but you can use all this stuff
+within your existing Python ecosystem. Like,
+we as programmers are very pragmatic. We don't want have to rewrite everything
+just to adopt new technology. Right. And so one of the most amazing things
+for Python programmers is that you can directly call from Python
+into Mojo, and you don't need bindings. What this means
+is that if you're a Python programmer and you're building and building and building
+and you're being very productive and lots of cool things,
+all the things we love about Python, but then you run into performance
+problems. Well, now instead of having to switch to C
+plus plus or Rust or Pi bind or like all this super crazy complicated stuff, you can
+just move a few for loops into Mojo that goes,
+you know, a thousand times faster and you can call it directly
+from your Python code. You don't have to write everything. Don't change your ecosystem.
+You can adopt it piecemeal. If you're super crazy, you want to make
+the real power of all the flops. Why stop there?
+Take the algorithm to the GPU. This is huge. We have people in our community
+that are doing this, and these are folks
+that have never programed in GPU before, and they always thought
+the GPUs were scary or they weren't
+smart enough or things like this. And so by making things easy and accessible and adaptable,
+what we're seeing already is people are like learning GPU programing
+for the first time. And I love this. This is the power of technology
+and community. Now our whole point here is to empower
+developers. Hopefully you get that from
+the entire just of what I'm talking about. And so one of the cool things about this
+is that if you're a Python developer, you don't have to like switch
+from the things we love
+about Python to curly braces, right? We don't have to switch
+to these crazy compiled makefiles, CMake, whatever it is
+that we're using again these days, inventing all of the same makefile stuff
+over again. You can experiment with things. And so it's really easy to play with this, and you can work with notebooks
+and all this kind of stuff if you care about performance, again,
+you get this full power of the hardware. And even CPUs are cool, like they have
+amazing amount of TOPS within the CPU. They have amazing features
+and a lot of modern AI systems are not just the GPU, it's
+not the GPU and CPU working together. And so Mojo is really quite unique
+in that it can scale through your entire software life cycle. It can dramatically reduce complexity at every single level of the stack
+that you might hit. And it can scale with you
+as you learn from basic stuff in Python to the crazy advanced,
+I want to go do a tensor core and build. amazing You know, the flashy attention 17 or something
+that somebody might come up with next. Now, of course, I
+don't have time to talk about everything. There's a tremendous amount
+of awesome stuff in Mojo. If you're interested,
+please do check out our webpage Go modular.com and you can look up
+mojo things like zero cost abstractions. Yes, it's faster than rust, even on CPUs. Full dynamic shape support. You can get layered
+tensor programing, like all the cool stuff
+that you'd expect from a modern system. And so there's
+a tremendous amount of depth there, and we just don't have time
+to talk about today. And so you may be asking, okay,
+this sounds cool. Again
+I told you can download it today. This is not a vaporware talk,
+but is it ready. Can you use it? The answer is yes. And there's lots
+of different ways to do that. So going back to our stack,
+one of the things we hear from enterprises is they want to deploy and scale
+not just one model or one use case, but they have a fleet of GPUs
+and they're managing these things and they have many different proteins.
+They're all trying to throw workloads onto these GPUs
+and they have to manage this. And so mammoth is a technology
+we're just unveiling now as you scale into this can amazing,
+TCO benefits disaggregated prefilled like all these cool things
+that you've come to expect from a cluster scale solution,
+but one that scales with you. Because the thing that we all know is
+that research is not going to slow down. AI is not done. It's just getting started.
+And there isn't one right solution. You need something that can scale
+into the full complexity in the full chaos madness that is AI today. So the other cool thing about mammoth and the other cool thing about our entire
+stack is we have a single implementation that scales, and it scales not just across
+research, but scales across hardware. And we love AMD like, we're super excited about the 355
+that we all heard about today. We also do love our friends at Nvidia
+and they have great GPUs too. And so one of the cool things about
+our stack is it's natively heterogeneous. And so if you have a commit
+that works on an Nvidia, you have some AMD in your fleet and you want to use the best
+algorithms that use the memory, the memory capacity of the AMD compute. We have other models that don't need that. Well, you can actually have
+the best solution for your workload. Instead of having to decide upfront
+what your workload will have to be three years from now,
+which of course, nobody can predict. And so this technology
+allows you to scale, gives you and your platform
+engineering teams the ability to negotiate
+the crazy chaotic waters of AI and actually be able
+to scale into this and manage it. So we have a lot of stuff going on, and I will only talk about
+one really exciting thing. Of course, that's AMD 355
+we're very excited about this new hardware platform,
+all the power and the flops. We think that it's everything that they've got going on
+from the memory capacity to the six performance
+to just everything that's happening with this chip is just amazingly excited,
+and we can't wait to ship this Incentives that are available. So with that, that's the end of my talk
+and I'm very happy to answer questions I'm happy to nerd out about like infinite
+layers of detail on all levels. And so. Hey, Chris, amazing talk. You know,
+congratulations on the partnership and the launch with 355 right. You know, mammoth. It's very exciting, actually. Like, in a way, we were actually looking
+for that kind of, tool. Is it a native with Max and Mojo
+or can I deploy it? Could, directly or, you know. Yeah. So.
+So this whole approach is to meet people. They there. And so I talk about our native stack
+because obviously we're very proud of them.
+We put a lot of energy into it. But yes, you can put native Cuda kernels into a max model
+and you can directly integrate Cuda like existing Cuda kernels. Of course, the only run on Nvidia hardware
+as you'd expect, right. But but being able to meet people
+where there is really important this works at every level of stack. So if you go up to PyTorch, like, yes, like we have a very fancy way
+to have GenAI native models and that's cool. And we have over 500 of those,
+by the way. It's very exciting. Great for the best performance and TCO
+and all the things you might want, but turns out PyTorch is amazing for research. Amazing if you just want to fiddle
+with one kernel. And so yes, our tech plugs into PyTorch
+at the mammoth level. Yes. And it works great with Max, but it can also talk to vLLM,
+and other solutions as well. And so we want to make sure that we can enable
+and integrate in ways that our customers and everybody in
+the ecosystem wants to work. Thank you. Yep. Thanks. It looks really cool. I'm curious, though, as the developer of
+Swift, why go in the direction of Python? Just because that was
+what the community was using, which would have been the same argument
+that could have been made against creating Swift in the first place. And why did why not look at other models
+rather than moving into a better Python? Great question. So let me reinterpret
+cast your question here a little bit. So you said back in the day
+of Objective-C, y'all Swift people,
+that's me, decided to invent new syntax. And that seemed to work. Well, why? Well, the answer is 
+Objective-C had a syntax problem, right? It was not very adoptable. It was not very usable
+pointer square brackets. It was very scary. And it prevent people
+from adopting them. Right. So you fast forward today
+and what is the lesson learned. And by the way I love Swift. It's not a GPU thing
+and like it doesn't scale. And so that's why not Swift literally you fast forward today we have exactly
+the same thing going on today. It's not Objective-C
+that the world is stuck with. It's gatekeeping. New developers, and gatekeeping and preventing people from learning
+how to do this new technology. Today it's C plus plus. So C plus plus again it's widely used. Lots of people appreciate it. There's so much technology
+that we have to thank C plus plus for because enabled just like back in the day
+Objective-C enabled the first iPhone. But the sad reality is that C plus Plus is difficult to love. This is my opinion. Maybe you disagree.
+And so we need something better, right? And so we decided you know what.
+Actually Python is pretty great. It turns out you different
+people can have different opinions, but Python doesn't have a syntax
+problem, has an implementation problem. So what we did is
+we took the best part of Python forward. And we said AI is fundamentally Python. Don't fight it. It's actually beautiful. And different people can disagree.
+And this is my opinion. And so take the power
+and the beauty of Python and then enable and open the developer ecosystem.
+Because I don't know. My kids. Python does not know C plus. Plus does not know rust or Julia or any of the other things
+you might be thinking of. Let's bring that technology
+in that new platform to the developers that are in Python,
+because I think it's pretty amazing. So I don't know if the
+answer to the question, but that's how I think about it. Hey, Chris, thanks for the talk. Just wondering, like the mojo coming in,
+trying to bridge the gap of performance and usability. And, you know, we can leverage it all. What do you think were the bottlenecks
+like in the future? As we are trying to evolve,
+we are trying to build compilers. Are the bottlenecks in the language or in compilers or in actual developers
+mental model itself? Yeah, that's a great question. So, we are not working on this today. But it has been pointed out to me
+that Mojo is actually perfect for solving things like FPGA programing
+and HLS and things like this, because a lot of the DNA
+that we've built into the language, and so what I would love to see is,
+you know, modular is very focused on AI, right? As a consequence of that,
+we are using Mojo ourselves. We have hundreds of thousand lines
+that we have built. We have more mojo in our code than C
+plus. Plus. This is it's amazing. It's I mean, as a guy who has written
+too much C plus. Plus, this is amazing. But as we play forward
+and as a consequence of building out AI and AI solutions using Mojo,
+what we're focused on is we're focused on things
+like how best programing. And so we have a very fancy
+layer of abstraction so that you can program tensor cores, and you get generic code against tiles
+and things like this. But as I think forward and as I dream.
+Again, we're not working on this. There's domain experts
+in many different fields. And so when I look at, for example,
+FPGAs, right there are amazingly, incredibly parallel architecture, right? There are domain experts
+that have built algorithms that are great
+against these new forms of compute. And so what Mojo can do
+is it can empower those developers to go build and innovate and then bring forward
+a software ecosystem that can scale. And so I don't know
+what the next limitation will be. I'm just right now very excited about
+where we are and what we're able to solve. And I don't know kind of what
+the fundamental headroom will be. I haven't thought about quantum
+or DNA computing or analog or maybe. I mean, there's lots of
+the computing is a big world out there. But I think it's pretty
+exciting where we are today. Okay. I'm basically, what you. Well, you're calling, old style FPGA type of person,
+so I'm not really a software person, but, just this is just my observation,
+but I think this conference kind of it seems like Xilinx, the former Xilinx people, are kind of missing
+from this conference. That's just my impression. It seems like the Radeon people
+conference. So, my my concern I have is
+I think the FPGA toolset like Vivaro or before I was call
+ISC resilience is probably two. I see design focused and even the term FPGA programing to hardware FPGA
+hardware background person like myself. It's I won't say it's offensive, but
+it's a misnomer because it's a really FPGA is really is a hardware device to be. Now it's been kind of explored
+by software. Okay. And there's a cultural issue,
+if you don't mind. I'm not an expert on FPGA programing,
+and I'd love to bubble it back to AI because that's the topic we have here. So yeah. Thank you. Chris, you know, just a follow up
+question to the, the lady over there. Right. And she was asking, you know, what about, you know, other accelerators
+like non GPUs. Yeah. You know, how do you see the support like, you know, the way right in the other day,
+I was, listening to the talk from the Triton team,
+the meta team. Right. You know, the fundamental challenge,
+the way they were explaining was you need to program for other non GPUs. You need to understand
+the microarchitecture. That's right. And you know I would love
+to hear your thoughts on that. Yeah. So I mean the Mojo and the Max tech stack
+is uniquely designed for that. We don't have anything to announce today,
+but it's are definitely on our list of concern. And it was designed from first principles
+to support that. In my history,
+I worked on scaled Google TPUs, which is an example of a very large scale
+deployment scale accelerator. And I don't know all of the world's chips,
+but I know that we can scale into that class of architecture
+and many others. And so, we don't have anything to announce
+today, but, I'm very excited about that. And I'm very excited
+about pulling this back together. And the plus one you, you can't have, like in air quotes, magic, abstraction like Triton, for example,
+trying to provide because there are fundamental
+differences in hardware. And so if you need fancy pointer indexing,
+that's different than what that fancy compiler
+stack promises to provide. Well, suddenly you're sitting there
+fighting the technology, you're fighting the compiler,
+fighting the system. And, you know, there's great claims. What I care about
+is actually improving things. And so I do not have anything to say. You should everybody should be skeptical
+of any claims until they can see it. And so Maxim Mojo don't run FPGAs
+doesn't run ES6. Let's focus on what it does today,
+which is it's an amazing thing for CPUs and GPUs. And, perhaps someday, someday later,
+we'll have more to talk about. Thank you. So awesome. Well, thank you everyone so

@@ -1,0 +1,17 @@
+# CreatorOS AI / ML Optional Stack
+# Target: Python 3.12
+# Minimum-version pins only (>=). No exact locks.
+
+numpy>=2.0
+torch>=2.0
+transformers>=4.50
+sentence-transformers>=5.0
+
+pillow>=11.0
+langchain-community>=0.3
+
+faiss-cpu>=1.11
+
+# Note:
+# memory/memory_vector.py uses LangChain FAISS + HuggingFaceEmbeddings,
+# and also CLIP via transformers (CLIPModel/CLIPProcessor).

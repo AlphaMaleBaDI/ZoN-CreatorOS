@@ -1,0 +1,7 @@
+# CreatorOS Development & Testing Dependencies
+# Target: Python 3.12
+# Minimum-version pins only (>=). No exact locks.
+
+pytest>=8.0
+black>=24.0
+flake8>=7.0
