@@ -134,7 +134,137 @@ The artifact contains:
 
 If all 10 are satisfied, ZoN CreatorOS MVP is complete.
 
-## 9. Adaptive Intelligence - Elevation of Vibra
+## 9. Hackathon Execution Philosophy
+
+### 9.1 The North Star
+
+Every decision answers one question:
+
+> **Does this make the Creator's work easier?**
+
+Not:
+- Does it use more AI?
+- Does it have more features?
+- Does it look impressive?
+
+CreatorOS is an **operating system for creators**, not an AI chatbot. Protect that identity.
+
+### 9.2 The Demo Wins the Hackathon
+
+Everything supports the Sacred Demo Pipeline:
+
+```
+Creator opens workspace
+        ↓
+Creator describes a goal
+        ↓
+Context Assembly builds understanding
+        ↓
+Agents collaborate
+        ↓
+Memory enriches the response
+        ↓
+Artifacts are generated
+        ↓
+Creator leaves with a concrete plan
+```
+
+If a feature does not improve that story, it can wait.
+
+### 9.3 Build Vertical Slices, Not Horizontal Layers
+
+Complete one end-to-end flow per phase. Do not spend 8 hours perfecting one module in isolation.
+
+```
+UI
+↓
+API
+↓
+Context Assembly
+↓
+Orchestrator
+↓
+Planner
+↓
+Launch Plan
+↓
+Display Result
+```
+
+A working system beats five unfinished components.
+
+### 9.4 Agent Determinism First
+
+Before introducing autonomous behavior, use simple intent routing:
+
+```
+if intent == "launch":
+    PlannerAgent()
+elif intent == "research":
+    ResearchAgent()
+```
+
+Predictable, debuggable, testable. Evolve to dynamic orchestration only after the deterministic path is proven.
+
+### 9.5 Services Layer Discipline
+
+Never allow:
+
+```
+API → Database
+```
+
+Always:
+
+```
+API → Service → Memory → Database
+```
+
+This decoupling is what makes the architecture testable and portable across hardware backends.
+
+### 9.6 Context Is the Product
+
+Most AI apps do:
+
+```
+Prompt → LLM
+```
+
+CreatorOS does:
+
+```
+Workspace → Project → Profile → Memory → Knowledge Graph → Context Assembly → LLM
+```
+
+That difference is the innovation. Protect it with every layer boundary.
+
+### 9.7 When You're Stuck
+
+**Is this an architecture problem?** → Don't code. Draw it.
+
+**Is this an implementation problem?** → Write pseudocode first.
+
+**Is this a debugging problem?** → Make the smallest reproducible example. Never debug the whole system.
+
+### 9.8 Keep a Builder's Journal
+
+Every day write down:
+- What worked
+- What broke
+- Why you changed something
+- What you learned
+
+By the end of the hackathon you will have an engineering log that strengthens both the presentation and future development.
+
+### 9.9 Don't Forget the Human
+
+Judges remember stories. CreatorOS isn't about AI — it is about someone saying "I have an idea" and walking away five minutes later with a launch strategy, content calendar, research, and execution roadmap. That is memorable.
+
+### 9.10 The Architecture Is Already Good
+
+Do not redesign mid-sprint. Not on Day 1. Not on Day 2. Not because someone on Discord suggests a different approach. The architecture has been reviewed and stress-tested across dozens of iterations. Trust it.
+
+## 10. Adaptive Intelligence - Elevation of Vibra
 
 `mood_bridge.py` from `zon_mcp` becomes the Adaptive Intelligence
 Engine in CreatorOS. Three concrete changes:
@@ -152,7 +282,7 @@ Engine in CreatorOS. Three concrete changes:
 
 This is what turns Vibra from a feature into a system.
 
-## 10. Hackathon Build Plan
+## 11. Hackathon Build Plan
 
 Day-by-day targets:
 
@@ -169,7 +299,7 @@ Day-by-day targets:
 - Day 6: MI300X benchmarks for embedding + retrieval + chat hot paths.
 - Day 7: Polish, README, demo video, submission form.
 
-## 11. Module Migration Order
+## 12. Module Migration Order
 
 When the strategy is approved, modules migrate from `zon_mcp` in this
 order:
@@ -186,7 +316,53 @@ Nothing else migrates. The three duplicate CLIs, the second FastAPI
 app, and the VS Code extension stay in AfroVBra. They are tooling, not
 platform.
 
-## 12. Eligibility & Lineage
+## 13. Future Horizon: CreatorOS Production Engine
+
+The architecture documented here extends beyond text artifacts to full multimedia production — and beyond film to any creative domain. The same layered design — Context Assembly → Agent Orchestration → Memory Persistence → Artifact Generation — applies to music, film, games, podcasts, animation, publishing, and education.
+
+A dedicated vision document (`docs/CREATOROS_PRODUCTION_ENGINE_VISION.md`) defines the long-term architecture, including:
+
+- **Production Intelligence Engine (PIE):** Native decision layer for model selection, cost estimation, quality trade-offs, and parallelization planning.
+- **Creative Asset Graph (CAG):** A labeled property graph connecting every creative object — characters, scenes, songs, campaigns — enabling automated cascade resolution when any element changes.
+- **Continuity Director Agent:** Prevents consistency errors across wardrobe, props, emotional arcs, and lore before generation.
+- **Budget & Compute Director Agent:** Routes tasks to cost-optimal models, estimating savings without noticeable quality loss.
+- **5-phase evolution path:** MVP → Foundation → Production Alpha → Multi-Domain → Production Ecosystem (including marketplace and network).
+
+Key architectural findings validated by the *Computer Village* film production research:
+- **No structural changes needed.** The existing 7-layer architecture accommodates all new agents and domains as natural extensions.
+- **CLIP multimodal embeddings already in place.** `memory/memory_vector.py` provides text-to-image retrieval for character consistency across scenes.
+- **The ModelRouter pattern scales.** `intelligence/router.py` extends from NPU-vs-cloud routing to Veo-vs-Kling-vs-Runway routing by adding engine-specific rules.
+- **The hackathon MVP is the correct first vertical slice.** The music-artist release plan validates the pipeline; multi-domain production is Phase 2+.
+
+This vision is a **post-hackathon expansion path.** It does not change the current sprint scope (see Section 9.10).
+
+## 14. Architectural Refinements from Production Research
+
+The film production research revealed five architectural refinements that strengthen the existing design without changing its structure:
+
+### 14.1 Production Kernel
+A stable core — Context Assembly, Agent Lifecycle, PIE, CAG, Model Router, Artifact Pipeline, Evaluation Layer — that remains unchanged when new domains are added. Everything else is a plugin. (ADR-004)
+
+### 14.2 Artifact Graph
+Artifacts are not terminal outputs. They are persistent state that feeds the next artifact in a dependency graph. The model shifts from `Prompt → Artifact` to `Intent → Artifact Graph`. (ADR-005)
+
+### 14.3 Evaluation Layer
+Every artifact passes through `Generate → Evaluate → Improve → Approve`. Specialized critics check planning, brand alignment, memory consistency, and domain correctness. (ADR-006)
+
+### 14.4 Domain Packs
+Domains are pluggable packs (agents, schemas, templates, routing, validators, critics, panels) loaded by the Kernel at workspace scope. Adding a domain = writing a new pack. (ADR-007)
+
+### 14.5 Design Principles
+Codified in `docs/PRINCIPLES.md`: Context before Generation, Artifacts over Conversations, Memory before Repetition, Deterministic before Autonomous, Human Approval before Execution, Domains Extend / Kernel Stable, Evaluate before Deliver, and the North Star.
+
+These refinements are documented in:
+- ADRs 004–007 in `docs/ARCHITECTURE_DECISIONS.md`
+- `docs/PRINCIPLES.md` (full principles document)
+- `docs/CREATOROS_PRODUCTION_ENGINE_VISION.md` (production engine architecture)
+
+All are **post-hackathon concerns**. The sprint scope (Section 11) and sprint checklist remain focused on the music-artist MVP.
+
+## 15. Eligibility & Lineage
 
 See `FOUNDATIONS.md`. Architectures and ideas are inherited from the
 AfroVBra project''s `zon_mcp` module. The code in this repository was

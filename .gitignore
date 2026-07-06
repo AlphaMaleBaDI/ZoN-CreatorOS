@@ -39,3 +39,14 @@ faiss_index/
 logs/
 workspace.zip
 
+# Pytest
+.pytest_cache/
+
+# Research notes (personal)
+docs/research/
+Agent.md
+deep-research-report.md
+
+# AI tooling configuration
+opencode.config.json
+

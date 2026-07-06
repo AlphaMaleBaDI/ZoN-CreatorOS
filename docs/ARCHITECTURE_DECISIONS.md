@@ -65,3 +65,156 @@ Implement a hybrid routing strategy using:
 
 ### Consequences
 * Core code must support config-based switching between local and cloud execution paths.
+
+---
+
+## 📄 ADR-004: Production Kernel as Stable Orchestration Core
+
+### Context
+As CreatorOS expands from a single-domain (music release plans) to multi-domain production (film, games, podcasts, publishing), the architecture needs a stable core that does not change when new domains are added. The alternative — adding domain-specific logic to the core — would create coupling and prevent independent evolution.
+
+### Decision
+Introduce the **Production Kernel** as the explicit stable core of the system. The Kernel owns:
+- Context Assembly
+- Agent Lifecycle Management
+- Production Intelligence Engine (PIE)
+- Creative Asset Graph (CAG)
+- Model Router
+- Artifact Pipeline
+- Evaluation Layer
+
+Domain-specific logic is implemented as **Domain Packs** that plug into the Kernel. The Kernel defines the plugin interface (agents, schemas, templates, routing rules, validators, critics, dashboard panels). Packs implement against this interface.
+
+### Rationale
+- **Stability:** The Kernel changes rarely; packs evolve independently.
+- **Extensibility:** Adding a new domain = writing a new pack, not modifying core infrastructure.
+- **Testability:** The Kernel can be tested without any domain pack loaded; packs can be tested against a mock Kernel.
+- **Ecosystem readiness:** The pack interface naturally becomes the marketplace API for third-party domain packs.
+
+### Consequences
+- All existing code must be refactored to separate Kernel concerns from domain-specific logic.
+- The Domain Pack interface must be defined and documented before Phase 2 begins.
+- Domain Packs must be loadable at workspace scope (different workspaces can have different packs enabled).
+
+---
+
+## 📄 ADR-005: Artifact Graph over Terminal Outputs
+
+### Context
+In most AI systems, generated outputs are terminal — they are delivered to the user and forgotten. In a creative production system, artifacts are interconnected: a release plan feeds a marketing campaign, which feeds a calendar, which feeds a video script. Treating artifacts as independent outputs loses the production chain and prevents iterative improvement.
+
+### Decision
+Artifacts are first-class persistent nodes in an **Artifact Graph**. Each artifact:
+- Stores its provenance (which context, agents, and prior artifacts produced it)
+- Links to successor artifacts (what it feeds into)
+- Maintains version history
+- Is queryable by relationship, not just by ID
+- Is part of the project's persistent state, not a session export
+
+The generation model shifts from `Prompt → Artifact` to `Intent → Artifact Graph`.
+
+### Rationale
+- **Traceability:** Every output can be traced back to its inputs and forward to its dependents.
+- **Iteration:** Modifying one artifact automatically surfaces which downstream artifacts are affected.
+- **Self-evolving projects:** The artifact graph grows organically across sessions, rather than resetting each time.
+- **Alignment with CAG:** The Artifact Graph is a specialization of the Creative Asset Graph — both use the same property graph infrastructure.
+
+### Consequences
+- Artifact schemas must include `predecessor_ids`, `provenance`, and `version` fields.
+- The Artifact Service (`services/artifact_service.py`) must support graph traversal queries, not just CRUD.
+- The Dashboard must render artifact relationship views (dependency trees, production chains).
+
+---
+
+## 📄 ADR-006: Evaluation Layer with Specialized Critics
+
+### Context
+AI-generated creative work has no natural quality feedback loop. The model generates, and the creator either accepts or regenerates blindly. Without structured evaluation, errors in planning, brand alignment, memory consistency, and domain-specific correctness propagate through the production pipeline undetected.
+
+### Decision
+Introduce a dedicated **Evaluation Layer** within the Production Kernel. Every artifact passes through a chain of specialized critics before delivery:
+
+```
+Generate → Evaluate → Improve → Approve
+```
+
+Each critic:
+- Checks a single quality dimension
+- Assigns a score or pass/fail
+- Optionally generates structured improvement suggestions
+- Passes to the next critic or back for revision
+
+Critics are registered by Domain Packs and can be chained conditionally. The Evaluation Layer also produces an audit trail for every artifact.
+
+### Rationale
+- **Catch errors early:** A planning critic catches structural issues before generation compute is spent.
+- **Transparency:** Creators see exactly which checks passed and failed, reducing blind trust in model output.
+- **Continuous improvement:** Critic feedback can be logged and used to fine-tune prompt templates and routing rules.
+- **Domain-specific:** Each Domain Pack registers its own critics; the Kernel does not need to know about every domain.
+
+### Consequences
+- Critics must be stateless and deterministic for a given input (no randomness in evaluation).
+- Critics must be fast — they should not require LLM calls for every check (lightweight heuristics first, LLM-assisted checks second).
+- The Dashboard must display critic scores per artifact (pass/fail visualization, improvement suggestions).
+
+---
+
+## 📄 ADR-007: Domain Packs as Pluggable Production Modules
+
+### Context
+Hardcoding production domains (Music, Film, Games, Podcast) into the core architecture would create a monolith. Each domain has different agents, schemas, prompt templates, routing rules, validators, and quality criteria. Adding a new domain would require modifying multiple core modules.
+
+### Decision
+Domains are implemented as **Domain Packs** — self-contained directories that plug into the Production Kernel. Each pack provides:
+
+| Component | Description |
+|---|---|
+| `agents/` | Domain-specific agent implementations |
+| `schemas/` | Pydantic artifact models |
+| `templates/` | Reusable prompt library |
+| `routing.py` | Model routing rules for the domain |
+| `validators.py` | Domain-specific output validators |
+| `critics.py` | Evaluation layer critics |
+| `dashboard.py` | Streamlit dashboard panels |
+
+The Kernel loads packs based on workspace configuration. Multiple packs can be active simultaneously (a music project and a film project in different workspaces).
+
+### Rationale
+- **Modularity:** Each pack is independently developed, tested, and versioned.
+- **Extensibility:** Third-party developers can create and publish Domain Packs.
+- **Marketplace readiness:** The pack structure naturally becomes the unit of distribution in the CreatorOS Marketplace.
+- **Kernel stability:** The Kernel defines the interface but never imports domain-specific code directly.
+
+### Consequences
+- The Domain Pack plugin interface must be defined in the Kernel before Phase 2.
+- A pack registry must manage loading, dependency resolution, and version conflicts.
+- The MVP Music domain must be refactored into a Domain Pack to validate the interface before adding new domains.
+
+---
+
+## 📄 ADR-008: Architecture Freeze — Implementation over Abstraction
+
+### Context
+Complex systems face a recurring risk: **architecture drift** — the tendency to add abstractions, layers, and components because they seem necessary in theory, rather than because implementation has proven they are needed. Each new abstraction increases cognitive load, documentation surface, and the risk of building infrastructure that never gets used.
+
+After the preseason architecture definition (ADR-001 through ADR-007), the system has reached a coherent architectural language. Continuing to add abstractions before implementation will produce diminishing returns.
+
+### Decision
+Effective immediately, the architecture is **frozen** at the current abstraction level. Only three categories of changes are permitted:
+
+1. **Bug fixes** — corrections to existing implementations that do not introduce new concepts.
+2. **Clarifications** — changes to documentation that improve understanding without adding new abstractions.
+3. **Implementation discoveries** — new abstractions are only permitted if they emerge from implementation necessity (i.e., code is duplicated three times across independent modules, proving a missing abstraction).
+
+New architectural layers, new agent types, and new conceptual components require **implementation evidence** rather than theoretical benefit. The burden of proof lies with the proposer to demonstrate that the architecture cannot express a required behavior without the new abstraction.
+
+### Rationale
+- **Diminishing returns:** Each additional abstraction explains less about the system than the one before it. The core patterns are established.
+- **Increasing returns from implementation:** Every hour spent building and validating the current architecture produces more evidence than an hour spent refining it on paper.
+- **Hackathon constraint:** With a fixed deadline, implementation velocity matters more than architectural completeness.
+- **Evidence-first design:** Abstractions that emerge from real usage are more likely to be correct than abstractions designed in advance.
+
+### Consequences
+- The sprint checklist (`docs/SPRINT_EXECUTION_CHECKLIST.md`) is the sole source of truth for what gets built. No work outside the checklist is permitted.
+- Architectural discussions during the sprint are limited to: "Does this belong in the existing architecture?" If no, it waits. If yes, it is implemented as simply as possible.
+- After the hackathon, the freeze may be lifted by reviewing each proposed new abstraction against actual implementation pain points.

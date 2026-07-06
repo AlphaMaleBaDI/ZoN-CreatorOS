@@ -9,6 +9,54 @@ Deliver a structured release strategy and content plan for a music artist, provi
 
 ---
 
+## 🚀 The Sacred Demo Pipeline (High-Level)
+
+This is the story the judge experiences. Every component exists to serve this flow:
+
+```
+Creator opens workspace
+        ↓
+Creator describes a goal
+        ↓
+Context Assembly builds understanding
+        ↓
+Agents collaborate
+        ↓
+Memory enriches the response
+        ↓
+Artifacts are generated
+        ↓
+Creator leaves with a concrete plan
+```
+
+---
+
+## 🔄 Vertical Slice Architecture
+
+Each phase builds one end-to-end vertical slice. Every slice crosses all layers of the stack:
+
+```
+Phase 1.2         Phase 1.3            Phase 1.4
+─────────         ─────────            ─────────
+UI                UI                   UI
+│                 │                    │
+API               API                  API
+│                 │                    │
+Context Assembly  Context Assembly     Context Assembly
+│                 │                    │
+Orchestrator      Orchestrator         Orchestrator
+│                 │                    │
+Planner Agent     Planner Agent        Planner Agent
+│                 │                    │
+Launch Plan       Content Calendar     Execution Report
+│                 │                    │
+Display Result    Display Result       Display Result
+```
+
+**Rule:** Never build a layer in isolation. Complete the vertical slice first, then add depth.
+
+---
+
 ## 🚀 The Sacred User Flow
 
 ### 1. Inputs Upload

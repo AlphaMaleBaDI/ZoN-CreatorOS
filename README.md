@@ -1,6 +1,6 @@
 # ZoN CreatorOS
 
-An **Adaptive Creator Operating System** designed as the intelligence layer for creative workspaces. 
+A **context-native creative operating system** that transforms fragmented ideas, memories, and goals into production-ready artifacts through persistent context, intelligent orchestration, and domain-specific production engines.
 
 Unlike traditional chat-only assistants, ZoN CreatorOS combines persistent scoped memories, active creator style profiles, and unified multi-agent orchestrations to translate scattered creator logs directly into structured plans, timelines, and calendars.
 
@@ -99,3 +99,17 @@ To verify the environment, make sure Python 3.12 is active and run:
 .venv\Scripts\python -m pytest
 ```
 All system milestones and design specifications are logged in `docs/` and tracked in our task files.
+
+---
+
+## 📐 Design Principles
+
+The architecture is guided by ten design principles codified in `docs/PRINCIPLES.md`, including: Context before Generation, Artifacts over Conversations, Memory before Repetition, Deterministic before Autonomous, Human Approval before Execution, and Domains Extend / Kernel Stable.
+
+## 🔭 Future Horizon: CreatorOS Production Engine
+
+The architecture documented here extends beyond text artifacts to full multimedia production — and beyond film to any creative domain. The `docs/CREATOROS_PRODUCTION_ENGINE_VISION.md` document defines the long-term architecture: a Production Kernel, Production Intelligence Engine (PIE), Creative Asset Graph (CAG), Evaluation Layer, and pluggable Domain Packs for music, film, games, podcasts, animation, publishing, and education.
+
+See also ADRs 004–007 in `docs/ARCHITECTURE_DECISIONS.md` for the architectural rationale behind the Production Kernel, Artifact Graph, Evaluation Layer, and Domain Packs.
+
+**Current sprint focus:** Music artist release plan MVP. The production engine vision is a post-hackathon expansion path.
