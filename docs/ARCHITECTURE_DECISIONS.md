@@ -218,3 +218,68 @@ New architectural layers, new agent types, and new conceptual components require
 - The sprint checklist (`docs/SPRINT_EXECUTION_CHECKLIST.md`) is the sole source of truth for what gets built. No work outside the checklist is permitted.
 - Architectural discussions during the sprint are limited to: "Does this belong in the existing architecture?" If no, it waits. If yes, it is implemented as simply as possible.
 - After the hackathon, the freeze may be lifted by reviewing each proposed new abstraction against actual implementation pain points.
+
+---
+
+## ✅ ADR-009: Kernel Validation Complete
+
+### Context
+Since ADR-008 (Architecture Freeze), the team implemented the MVP vertical slice (Workspace → Context Assembly → Orchestrator → Planning Agent → Launch Plan). Before expanding into Phase 1.2 (Memory & Profile Foundation), the Kernel required structured validation to confirm the architecture survives implementation.
+
+### Decision
+The CreatorOS Kernel has been validated through a structured demo (`demos/demo_kernel.py`) confirming all five kernel criteria:
+
+| Criterion | Result | Evidence |
+|---|---|---|
+| Context Assembly | PASS | Profile (name, brand, personality), 3 goals, vibra state all present in ContextObject |
+| Genuine Orchestration | PASS | OrchestratorAgent scans intent keywords, matched "launch" + "campaign", routed to PlanningAgent |
+| Artifact Persistence | PASS | LaunchPlan saved as JSON to `zon_memory/artifacts/{ws_id}/` and successfully reloaded from disk |
+| Determinism | PASS | Two runs both produced structurally coherent LaunchPlans with valid scores and action items |
+| Observability | PASS | 28 structured log lines tracking every pipeline stage |
+
+### Rationale
+- **Architecture survived first contact with reality.** The theoretical design (ADR-001 through ADR-008) was exercised end-to-end without needing structural changes.
+- **Intent-based orchestration is demonstrated.** The OrchestratorAgent performs genuine routing (5 keywords scanned, 2 matched, sub-agent selected) rather than calling a single LLM directly.
+- **Provider abstraction is verified.** The provider chain (Ollama Cloud → NVIDIA → static fallback) resolves without modifications to the Kernel.
+- **Artifact durability is proven.** Generated launch plans persist to disk as JSON under workspace scope and reload correctly.
+
+### Consequences
+- The Kernel transitions from **architecture validation** to **platform evolution**.
+- Memory & Identity becomes the next implementation priority.
+- Future contributors see a validated foundation, not just documented intent.
+- The architecture freeze (ADR-008) remains in effect — no new abstractions without implementation evidence.
+- All subsequent work builds on a proven Core, not an assumed one.
+
+---
+
+## ✅ ADR-010: Identity Foundation Complete
+
+### Context
+After Kernel Validation (ADR-009), the system required a persistent identity layer so that every interaction begins with a rich understanding of the creator, workspace, projects, and prior artifacts. Without this, Context Assembly was limited to the current request — it could not reason across sessions.
+
+### Decision
+The **Creator Continuity Layer** is now operational, comprising six integrated subsystems:
+
+| Subsystem | File | Role |
+|---|---|---|
+| Kernel | `core/kernel.py` | Enforces invariant K-001: initialize → assemble context → execute agents. Runtime error if violated. |
+| Context Enrichment | `core/context_assembly.py` | Injects `recent_artifacts` + `active_projects` into every ContextObject alongside profile, goals, vibra |
+| Artifact Envelope | `core/orchestration.py` | Every artifact saved with `{artifact_id, type, workspace_id, project_id, created_by, provider, confidence, version, data}` |
+| Snapshot Service | `services/snapshot_service.py` | Independent execution trace (provider, intent, confidence, timestamp) — separate from artifacts and memory |
+| Session Memory | `core/orchestration.py` | Auto-ingests request + artifact ID as memory nodes after each successful pipeline execution |
+| Retrieval API | `main.py` | `GET /workspaces/{id}/artifacts`, `GET /workspaces/{id}/artifacts/{aid}`, `GET /workspaces/{id}/snapshots` |
+
+### Invariant K-001 (Permanent)
+> No intelligence executes before context is assembled. `Kernel.initialize()` must complete before `Kernel.execute()` is called.
+
+### Rationale
+- **Continuity over sessions:** Creator identity, workspace state, and prior artifacts load automatically — the system does not reset between requests.
+- **Separation of concerns:** Memory, artifacts, and snapshots are deliberately decoupled. Each can evolve independently without creating coupling.
+- **Artifact lineage:** The envelope schema creates a foundation for versioning, provider auditing, and provenance tracking without schema redesign.
+- **Observability by design:** Every execution produces a snapshot, making evaluation, analytics, and timeline visualization possible without ad-hoc instrumentation.
+
+### Consequences
+- All future agent execution must go through `Kernel.execute()` — bypassing the Kernel is an architecture violation.
+- The artifact envelope schema (`artifact_id`, `type`, `provider`, `confidence`, `version`) must not be modified without ADR update.
+- Snapshot storage format is independent of artifact and memory storage — this separation is deliberate and must be preserved.
+- Phase 2 (Workflow Intelligence) builds on the Continuity Layer, not below it.

@@ -6,33 +6,90 @@ This document serves as the absolute target list of deliverables for the build s
 
 ---
 
-## 📦 Phase 1.2: Vertical Slice 1 — Memory & Profile Foundation
+## ✅ Phase 1.1: Vertical Slice 0 — Kernel Validation (Complete)
 
-*Slice scope: Schema → Service → Storage → API → Test*
+Kernel validated via `demos/demo_kernel.py`. All 5 criteria passed.
 
-**Schemas (Layer 1 — Core)**
-- [ ] Implement isolated workspace scoping (`WorkspaceScope`, `ProjectScope`, `MemoryScope` filters)
+**Implemented:**
+- Workspace Service (JSON-backed CRUD)
+- CreatorProfileEngine (JSON-backed CRUD)
+- VibraStateEngine (keyword-based mood detection + state history)
+- MemoryService (workspace-scoped memory engine wrapper)
+- ContextAssemblyEngine (profile + vibra + memory → ContextObject)
+- ArtifactService (workspace-scoped JSON artifact storage)
+- OrchestratorAgent (intent-based routing: launch/release → PlanningAgent)
+- PlanningAgent (LLM provider chain: Ollama Cloud → NVIDIA → static fallback)
+- Orchestrator (pipeline: context → agent → artifact persist)
+- FastAPI app with 15 routes
+- 18 tests passing
 
-**Services (Layer 5 — Services)**
-- [ ] Profile Service: save, load, update creator profile
-- [ ] Memory Service: scoped vector query + session ingestion
-
-**Memory (Layer 4 — Memory)**
-- [ ] Implement FAISS vector storage (embedding indexing & search retrieval)
-- [ ] Implement CreatorProfileEngine (persistence CRUD)
-- [ ] Implement VibraStateEngine with per-scope history
-
-**API (Layer 2 — Application)**
-- [ ] Expose profile endpoints in `api/memory_routes.py`
-
-**Tests**
-- [ ] Profile retrieval & update tests
-- [ ] Workspace memory query insulation tests
-- [ ] Scope hierarchy tests
+**Validated:**
+| Criterion | Status |
+|---|---|
+| Context Assembly | ✅ |
+| Genuine Orchestration | ✅ |
+| Artifact Persistence | ✅ |
+| Determinism | ✅ |
+| Observability | ✅ |
 
 ---
 
-## 🧠 Phase 1.3: Vertical Slice 2 — Context Assembly Pipeline
+## 📦 Phase 1.2: Mission 004 — Creator Identity & Memory Foundation
+
+**Core invariant:** No model executes before Context Assembly completes.
+
+**Objective:** Transform Context Assembly from `Current Request` into `Current Request + Persistent Creator Identity + Workspace Memory`.
+
+### Startup Flow
+When the system initializes:
+```
+Load Workspace(s)
+    ↓
+Load Creator Profile
+    ↓
+Load Previous Artifacts
+    ↓
+Load Active Projects
+    ↓
+Assemble Context
+    ↓
+Agent Executes
+```
+
+### Implementation Plan
+
+**A. Identity Persistence Layer (below Context Assembly)**
+- [ ] CreatorProfileEngine: multi-profile CRUD ✅ (done)
+- [ ] WorkspaceService: multi-workspace + projects ✅ (done)
+- [ ] ArtifactService: workspace-scoped artifact storage ✅ (done)
+- [ ] ProfileService: wraps CreatorProfileEngine ✅ (done)
+- [ ] **Kernel startup loader**: load workspace → profile → artifacts → projects before context assembly
+
+**B. Context Assembly Enrichment**
+- [ ] ContextAssemblyEngine: inject previous artifacts into context
+- [ ] ContextAssemblyEngine: inject active project state
+- [ ] ContextAssemblyEngine: inject workspace preferences
+- [ ] Verify: "Load Workspace → Load Profile → Load Artifacts → Load Projects → Assemble Context" fires before agents
+
+**C. Memory Enhancement**
+- [ ] MemoryService: auto-ingest session outputs as memory nodes
+- [ ] MemoryService: cross-session recall from workspace scope
+- [ ] FAISS vector storage: embedding indexing & search retrieval (from existing `memory/memory_vector.py`)
+- [ ] Workspace-scoped memory filtering
+
+**D. API Exposure**
+- [ ] Profile endpoints ✅ (done in `main.py`)
+- [ ] Workspace endpoints ✅ (done in `main.py`)
+- [ ] Artifact retrieval endpoints
+- [ ] Session memory auto-ingestion endpoint
+
+**E. Tests**
+- [ ] Kernel startup sequence test (loads all identity state before context assembly)
+- [ ] Cross-session memory recall test
+- [ ] Artifact → Memory ingestion test
+- [ ] Workspace isolation test (workspace A cannot see workspace B's memory)
+
+---
 
 *Slice scope: Context Assembly → Vibra → Router → API → Display*
 

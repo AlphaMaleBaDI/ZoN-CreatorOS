@@ -67,7 +67,9 @@ class MoodBridge:
                 scores[mood] = score
         
         if not scores:
-            return DEFAULT_VIBRA
+            result = DEFAULT_VIBRA.copy()
+            result.pop("keywords", None)
+            return result
         
         # Select the mood with the highest score
         best_mood = max(scores, key=scores.get)

@@ -26,6 +26,8 @@ class ContextObject(BaseModel):
     user_request: str
     creator_profile: Dict[str, Any] = Field(default_factory=dict)
     memory_snapshot: List[Dict[str, Any]] = Field(default_factory=list)
+    recent_artifacts: List[Dict[str, Any]] = Field(default_factory=list)
+    active_projects: List[Dict[str, Any]] = Field(default_factory=list)
     vibra_state: Dict[str, Any] = Field(default_factory=dict)
     goals: List[str] = Field(default_factory=list)
     timestamp: float

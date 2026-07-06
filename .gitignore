@@ -28,6 +28,10 @@ Thumbs.db
 faiss_index/
 *.faiss
 *.pkl
+
+# Runtime data (generated on each env)
+workspace_db/
+zon_memory/
 *.npy
 
 # Editor
