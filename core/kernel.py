@@ -1,11 +1,12 @@
 import time
 import logging
-from typing import Optional, Any, List
+from typing import Optional, Any, List, Set
 from uuid import UUID
 
-from core.schemas import ContextObject
+from core.schemas import ContextObject, PIEAssessment
 from core.context_assembly import ContextAssemblyEngine
 from core.orchestration import Orchestrator
+from core.pie import ProductionIntelligenceEngine
 from services.workspace_service import WorkspaceService
 from services.profile_service import ProfileService
 from services.artifact_service import ArtifactService
@@ -31,6 +32,7 @@ class Kernel:
         self.snapshot_service = SnapshotService()
         self.context_engine = ContextAssemblyEngine()
         self.orchestrator = Orchestrator(artifact_service=self.artifact_service)
+        self.pie = ProductionIntelligenceEngine()
 
         self.initialized = False
         self.current_workspace = None
@@ -123,4 +125,21 @@ class Kernel:
             intent="launch_plan",
             confidence=getattr(result, "confidence_score", None),
         )
+
+        pie_assessment = self.pie.analyze(
+            artifact_type=self.orchestrator._last_artifact_type or "launch_plan",
+            existing_artifact_types=self._get_existing_types(),
+        )
+        result._pie_assessment = pie_assessment
+
         return result
+
+    def _get_existing_types(self) -> Set[str]:
+        types = set()
+        for art in self.recent_artifacts:
+            atype = art.get("artifact_type") if isinstance(art, dict) else None
+            if atype:
+                types.add(atype)
+        if self.orchestrator._last_artifact_type:
+            types.add(self.orchestrator._last_artifact_type)
+        return types

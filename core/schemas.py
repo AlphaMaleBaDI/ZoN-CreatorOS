@@ -20,6 +20,18 @@ class MemoryScope(BaseModel):
     project_id: Optional[UUID] = None
     tags: List[str] = Field(default_factory=list)
 
+PRODUCTION_STATES = ["planning", "production", "review", "publishing", "completed"]
+
+
+class PIEAssessment(BaseModel):
+    production_state: str = "planning"
+    completed: List[str] = Field(default_factory=list)
+    missing: List[str] = Field(default_factory=list)
+    recommended_next: List[str] = Field(default_factory=list)
+    production_progress: float = 0.0
+    confidence: float = 0.0
+
+
 class ContextObject(BaseModel):
     workspace_id: UUID
     project_id: Optional[UUID] = None

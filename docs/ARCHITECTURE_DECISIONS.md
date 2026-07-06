@@ -283,3 +283,65 @@ The **Creator Continuity Layer** is now operational, comprising six integrated s
 - The artifact envelope schema (`artifact_id`, `type`, `provider`, `confidence`, `version`) must not be modified without ADR update.
 - Snapshot storage format is independent of artifact and memory storage — this separation is deliberate and must be preserved.
 - Phase 2 (Workflow Intelligence) builds on the Continuity Layer, not below it.
+
+---
+
+## ✅ ADR-011: Production Intelligence Introduced
+
+### Context
+After Kernel Validation (ADR-009) and Identity Foundation (ADR-010), the system could generate artifacts and persist context across sessions, but it could not reason about production completeness. Every artifact was produced in isolation — no subsystem could answer "what exists, what's missing, and what should happen next."
+
+The multi-workspace architecture (ADR-001) and Artifact Graph vision (ADR-005) implied intelligent production awareness, but the architecture freeze (ADR-008) prohibited new abstractions without implementation evidence.
+
+### Decision
+The **Production Intelligence Engine (PIE)** is introduced as a stateless decision service owned by the Kernel, operating exclusively on deterministic rules — no LLM calls, no database, no external dependencies.
+
+PIE v0 comprises:
+
+| Component | File | Role |
+|---|---|---|
+| PKG (Production Knowledge Graph) | `core/pie.py` | Static adjacency map: `artifact_type → [valid next types]` |
+| PIE Engine | `core/pie.py` | BFS traversal + priority ranking + progress computation |
+| PIEAssessment Schema | `core/schemas.py` | `production_state, completed, missing, recommended_next, production_progress, confidence` |
+| Kernel Integration | `core/kernel.py` | PIE runs after `execute()` completes, before returning to caller |
+| API Integration | `main.py` | `pie` field included inline in `POST /generate-launch-plan` response |
+
+### Production Knowledge Graph (PKG v0)
+
+```
+launch_plan → campaign_plan, content_calendar, press_release
+campaign_plan → budget_plan, content_calendar
+content_calendar → content_script, production_schedule
+press_release → media_kit, press_distribution
+budget_plan → resource_allocation
+content_script → []  (leaf)
+production_schedule → []  (leaf)
+media_kit → []  (leaf)
+press_distribution → []  (leaf)
+resource_allocation → []  (leaf)
+```
+
+### Production States
+
+| State | Progress Range | Meaning |
+|---|---|---|
+| `planning` | < 0.35 | Foundational artifacts only |
+| `production` | 0.35 – 0.59 | Core production in progress |
+| `review` | 0.60 – 0.84 | Most artifacts exist, quality review phase |
+| `publishing` | 0.85 – 0.99 | Near complete, final deliverables pending |
+| `completed` | 1.0 | All reachable artifacts produced |
+
+### Rationale
+- **Zero LLM dependency:** PIE is fully deterministic — tests pass without API keys, network, or model access. This separation between *generation* (LLM-dependent) and *evaluation* (deterministic) is a core architectural property.
+- **Stateless by design:** PIE receives state, computes assessment, returns result. No internal state, no caching, no side effects. Testable in isolation.
+- **Kernel-owned:** PIE runs after `execute()` — it does not interfere with generation, does not block the pipeline, and produces advisory output alongside the artifact.
+- **Progress as a signal:** `production_progress` (0.0 → 1.0) gives creators and dashboards a single numeric indicator of production completeness, derived from graph reachability.
+- **Confidence weighted by graph density:** Confidence combines progress with graph complexity — a small graph with few branches produces lower confidence than a richly connected production path.
+- **Vocabulary over functionality:** The `production_state` field adds no new reasoning — it maps `progress` to a human-readable label — but it changes how the system communicates about production maturity.
+
+### Consequences
+- PIE must remain stateless and deterministic. Any future version that introduces LLM calls for production reasoning must first demonstrate that the static graph is insufficient.
+- The PKG can be extended (new artifact types, new edges) without modifying the PIE engine — the graph is a data dependency, not a code dependency.
+- The three-question output (`completed`, `missing`, `recommended_next`) becomes the standard interface for production queries — dashboards, CLIs, and future evaluation agents consume this shape.
+- ADR-004's Production Kernel now includes PIE as a confirmed component (alongside Context Assembly, Agent Lifecycle, and Artifact Pipeline).
+- The first evolutionary cycle is complete: Architecture → Kernel → Identity → Production Intelligence.

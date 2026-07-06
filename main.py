@@ -161,7 +161,11 @@ def generate_launch_plan(req: GenerateLaunchPlanRequest):
         project_id=req.project_id,
     )
     result = kernel.execute(context)
-    return result.model_dump() if hasattr(result, "model_dump") else result
+    data = result.model_dump() if hasattr(result, "model_dump") else dict(result)
+    pie = getattr(result, "_pie_assessment", None)
+    if pie:
+        data["pie"] = pie.model_dump()
+    return data
 
 
 if __name__ == "__main__":

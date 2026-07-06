@@ -48,6 +48,8 @@ class Orchestrator:
         self.memory_service = MemoryService()
 
         self._last_artifact_id: Optional[str] = None
+        self._last_artifact_type: Optional[str] = None
+        self._last_artifact_envelope: Optional[dict] = None
         self._last_provider: Optional[str] = None
 
     def run_flow(self, context: ContextObject) -> Any:
@@ -58,12 +60,14 @@ class Orchestrator:
         self._last_provider = provider
 
         artifact_id = f"launch_plan_{int(time.time())}"
+        artifact_type = "launch_plan"
         self._last_artifact_id = artifact_id
+        self._last_artifact_type = artifact_type
 
         data = result.model_dump() if hasattr(result, "model_dump") else result
         envelope = _build_artifact_envelope(
             artifact_id=artifact_id,
-            artifact_type="launch_plan",
+            artifact_type=artifact_type,
             workspace_id=context.workspace_id,
             project_id=context.project_id,
             created_by="PlanningAgent",
@@ -71,6 +75,7 @@ class Orchestrator:
             confidence=data.get("confidence_score"),
             data=data,
         )
+        self._last_artifact_envelope = envelope
         self.artifact_service.save_artifact(
             workspace_id=context.workspace_id,
             artifact_id=artifact_id,
