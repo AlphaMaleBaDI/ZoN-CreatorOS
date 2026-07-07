@@ -165,6 +165,9 @@ def generate_launch_plan(req: GenerateLaunchPlanRequest):
     pie = getattr(result, "_pie_assessment", None)
     if pie:
         data["pie"] = pie.model_dump()
+    metrics = getattr(result, "_pipeline_metrics", None)
+    if metrics:
+        data["metrics"] = metrics.model_dump()
     return data
 
 

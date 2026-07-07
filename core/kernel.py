@@ -3,7 +3,7 @@ import logging
 from typing import Optional, Any, List, Set
 from uuid import UUID
 
-from core.schemas import ContextObject, PIEAssessment
+from core.schemas import ContextObject, PIEAssessment, PipelineMetrics
 from core.context_assembly import ContextAssemblyEngine
 from core.orchestration import Orchestrator
 from core.pie import ProductionIntelligenceEngine
@@ -40,12 +40,14 @@ class Kernel:
         self.current_profile_dict: dict = {}
         self.current_projects: List[dict] = []
         self.recent_artifacts: List[dict] = []
+        self._metrics = PipelineMetrics()
 
     def initialize(
         self,
         workspace_id: Optional[UUID] = None,
         creator_name: Optional[str] = None
     ) -> "Kernel":
+        t0 = time.perf_counter()
         logger.info("Kernel initializing...")
 
         ws = None
@@ -84,7 +86,8 @@ class Kernel:
         logger.info(f"  Recent artifacts loaded: {len(recent)}")
 
         self.initialized = True
-        logger.info("Kernel initialized. Ready for context assembly.")
+        self._metrics.kernel_boot_ms = round((time.perf_counter() - t0) * 1000, 1)
+        logger.info(f"Kernel initialized in {self._metrics.kernel_boot_ms}ms.")
         return self
 
     def assemble_context(
@@ -98,7 +101,8 @@ class Kernel:
                 "initialize() must be called before assemble_context(). "
                 "No model executes before Context Assembly completes."
             )
-        return self.context_engine.assemble_context(
+        t0 = time.perf_counter()
+        ctx = self.context_engine.assemble_context(
             workspace_id=self.current_workspace.workspace_id,
             project_id=project_id,
             user_request=user_request,
@@ -106,6 +110,9 @@ class Kernel:
             recent_artifacts=self.recent_artifacts,
             active_projects=self.current_projects,
         )
+        self._metrics.context_assembly_ms = round((time.perf_counter() - t0) * 1000, 1)
+        logger.info(f"  Context assembly in {self._metrics.context_assembly_ms}ms.")
+        return ctx
 
     def execute(self, context: ContextObject) -> Any:
         if not self.initialized:
@@ -113,8 +120,13 @@ class Kernel:
                 "Kernel invariant violated: "
                 "initialize() must be called before execute()."
             )
-        result = self.orchestrator.run_flow(context)
+        t0 = time.perf_counter()
 
+        result = self.orchestrator.run_flow(context)
+        self._metrics.orchestration_ms = round((time.perf_counter() - t0) * 1000, 1)
+        self._metrics.provider = self.orchestrator._last_provider or ""
+
+        t1 = time.perf_counter()
         self.snapshot_service.record(
             workspace_id=context.workspace_id,
             creator_name=self.current_profile_dict.get("creator_name"),
@@ -125,12 +137,18 @@ class Kernel:
             intent="launch_plan",
             confidence=getattr(result, "confidence_score", None),
         )
+        self._metrics.snapshot_ms = round((time.perf_counter() - t1) * 1000, 1)
 
+        t2 = time.perf_counter()
         pie_assessment = self.pie.analyze(
             artifact_type=self.orchestrator._last_artifact_type or "launch_plan",
             existing_artifact_types=self._get_existing_types(),
         )
+        self._metrics.pie_ms = round((time.perf_counter() - t2) * 1000, 1)
         result._pie_assessment = pie_assessment
+
+        self._metrics.total_ms = round((time.perf_counter() - t0) * 1000, 1)
+        result._pipeline_metrics = self._metrics
 
         return result
 

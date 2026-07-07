@@ -32,6 +32,17 @@ class PIEAssessment(BaseModel):
     confidence: float = 0.0
 
 
+class PipelineMetrics(BaseModel):
+    kernel_boot_ms: float = 0.0
+    context_assembly_ms: float = 0.0
+    orchestration_ms: float = 0.0
+    snapshot_ms: float = 0.0
+    pie_ms: float = 0.0
+    total_ms: float = 0.0
+    provider: str = ""
+    pipeline_version: str = "0.3.0"
+
+
 class ContextObject(BaseModel):
     workspace_id: UUID
     project_id: Optional[UUID] = None

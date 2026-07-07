@@ -263,8 +263,22 @@ def main():
             f"provider={s.get('provider')}  intent={s.get('intent')}  "
             f"confidence={s.get('confidence')}")
 
-    # -- 8. Output Preview ---------------------------------------------
-    section("8. Generated Launch Plan (Run 1)")
+    # -- 8. Pipeline Metrics -------------------------------------------
+    section("8. Pipeline Metrics")
+
+    metrics = getattr(result, "_pipeline_metrics", None)
+    if metrics:
+        log("[OK]", "Kernel boot", f"{metrics.kernel_boot_ms}ms")
+        log("[OK]", "Context assembly", f"{metrics.context_assembly_ms}ms")
+        log("[OK]", "Orchestration (API call)", f"{metrics.orchestration_ms}ms")
+        log("[OK]", "Snapshot recording", f"{metrics.snapshot_ms}ms")
+        log("[OK]", "PIE assessment", f"{metrics.pie_ms}ms")
+        log("[OK]", f"Total pipeline ({metrics.provider})", f"{metrics.total_ms}ms")
+    else:
+        log("[--]", "Metrics unavailable")
+
+    # -- 9. Output Preview ---------------------------------------------
+    section("9. Generated Launch Plan (Run 1)")
 
     print(f"  Strategy:")
     for line in textwrap.wrap(result.release_strategy, width=70):
@@ -348,7 +362,17 @@ def main():
         f"{len(snapshots)} execution snapshots recorded"
     ))
 
-    # V7: Observability
+    # V7: Pipeline Metrics
+    metrics_ok = metrics is not None and metrics.kernel_boot_ms > 0
+    validation_results.append((
+        "8. Pipeline Metrics",
+        metrics_ok,
+        f"boot={metrics.kernel_boot_ms}ms ctx={metrics.context_assembly_ms}ms "
+        f"orchestration={metrics.orchestration_ms}ms pie={metrics.pie_ms}ms "
+        f"total={metrics.total_ms}ms"
+    ))
+
+    # V8: Observability
     obs_ok = len(demo_log) > 25
     validation_results.append((
         "7. Observability",
@@ -364,11 +388,12 @@ def main():
 
     all_pass = all(ok for _, ok, _ in validation_results)
     if all_pass:
-        print(f"  [PASS] All 7 criteria PASSED.")
+        print(f"  [PASS] All {len(validation_results)} criteria PASSED.")
         print()
         print(f"  Conclusion: CreatorOS Kernel is validated.")
         print(f"  Identity Foundation is operational.")
-        print(f"  Ready for Phase 2 -- Memory Validation.")
+        print(f"  PIE v0 active.")
+        print(f"  Health metrics operational.")
     else:
         print(f"  [FAIL] Some criteria FAILED.")
         print(f"  Address failures before proceeding.")
