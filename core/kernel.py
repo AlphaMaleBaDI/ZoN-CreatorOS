@@ -12,6 +12,7 @@ from services.workspace_service import WorkspaceService
 from services.profile_service import ProfileService
 from services.artifact_service import ArtifactService
 from services.snapshot_service import SnapshotService
+from core.pipeline_progress import update as update_pipeline
 
 logger = logging.getLogger(__name__)
 
@@ -123,12 +124,14 @@ class Kernel:
                 "initialize() must be called before execute()."
             )
         t0 = time.perf_counter()
+        update_pipeline("orchestration", 0.2, "Running planning agent...", 0)
 
         result = self.orchestrator.run_flow(context, intent=intent)
         self._metrics.orchestration_ms = round((time.perf_counter() - t0) * 1000, 1)
         self._metrics.provider = self.orchestrator._last_provider or ""
 
         t1 = time.perf_counter()
+        update_pipeline("snapshot", 0.4, "Recording snapshot...", int((t1 - t0) * 1000))
         self.snapshot_service.record(
             workspace_id=context.workspace_id,
             creator_name=self.current_profile_dict.get("creator_name"),
@@ -142,6 +145,7 @@ class Kernel:
         self._metrics.snapshot_ms = round((time.perf_counter() - t1) * 1000, 1)
 
         t2 = time.perf_counter()
+        update_pipeline("eval", 0.6, "Evaluating artifact quality...", int((t2 - t0) * 1000))
         artifact_data = result.model_dump() if hasattr(result, "model_dump") else dict(result)
         eval_assessment = self.evaluator.evaluate(
             artifact=artifact_data,
@@ -151,6 +155,7 @@ class Kernel:
         result._eval_assessment = eval_assessment
 
         t3 = time.perf_counter()
+        update_pipeline("pie", 0.8, "Assessing production state...", int((t3 - t0) * 1000))
         eval_scores = self._extract_eval_scores(eval_assessment)
         pie_assessment = self.pie.analyze(
             artifact_type=self.orchestrator._last_artifact_type or "launch_plan",
@@ -160,9 +165,11 @@ class Kernel:
         self._metrics.pie_ms = round((time.perf_counter() - t3) * 1000, 1)
         result._pie_assessment = pie_assessment
 
-        self._metrics.total_ms = round((time.perf_counter() - t0) * 1000, 1)
+        elapsed = int((time.perf_counter() - t0) * 1000)
+        self._metrics.total_ms = round(elapsed, 1)
         result._pipeline_metrics = self._metrics
 
+        update_pipeline("complete", 1.0, "Workspace updated.", elapsed)
         return result
 
     def continue_production(self, user_request: str, project_id: Optional[UUID] = None) -> Any:

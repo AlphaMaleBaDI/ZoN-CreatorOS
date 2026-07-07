@@ -3,6 +3,7 @@ import sys
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional, List
 from uuid import UUID
@@ -18,8 +19,9 @@ from services.profile_service import ProfileService
 from services.artifact_service import ArtifactService
 from services.snapshot_service import SnapshotService
 from memory.creator_profile import CreatorProfile
+from routes.web_routes import router as web_router
 
-app = FastAPI(title="ZoN CreatorOS", version="0.5.0")
+app = FastAPI(title="ZoN CreatorOS", version="0.8.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,7 +31,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(memory_router, prefix="/memory", tags=["Memory"])
+app.include_router(web_router)
 
 pie_engine = ProductionIntelligenceEngine()
 
