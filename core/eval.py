@@ -78,6 +78,73 @@ def _check_angle_details(data: dict) -> EvalCheck:
     )
 
 
+# -- Campaign plan checks ----------------------------------------------------
+
+def _check_has_campaign_name(data: dict) -> EvalCheck:
+    name = data.get("campaign_name") or ""
+    return EvalCheck(
+        name="Has Campaign Name",
+        passed=isinstance(name, str) and len(name) > 3,
+        detail=f"Name: '{name}'" if name else "No campaign name",
+    )
+
+def _check_has_objectives(data: dict) -> EvalCheck:
+    objs = data.get("campaign_objectives") or []
+    return EvalCheck(
+        name="Has Objectives",
+        passed=isinstance(objs, list) and len(objs) > 0,
+        detail=f"{len(objs)} objective(s)" if objs else "No objectives defined",
+    )
+
+def _check_has_target_segments(data: dict) -> EvalCheck:
+    segs = data.get("target_segments") or []
+    return EvalCheck(
+        name="Has Target Segments",
+        passed=isinstance(segs, list) and len(segs) > 0,
+        detail=f"{len(segs)} segment(s)" if segs else "No target segments",
+    )
+
+def _check_has_channel_strategy(data: dict) -> EvalCheck:
+    channels = data.get("channel_strategy") or []
+    return EvalCheck(
+        name="Has Channel Strategy",
+        passed=isinstance(channels, list) and len(channels) > 0,
+        detail=f"{len(channels)} channel(s)" if channels else "No channel strategy",
+    )
+
+def _check_has_content_themes(data: dict) -> EvalCheck:
+    themes = data.get("content_themes") or []
+    return EvalCheck(
+        name="Has Content Themes",
+        passed=isinstance(themes, list) and len(themes) > 0,
+        detail=f"{len(themes)} theme(s)" if themes else "No content themes",
+    )
+
+def _check_has_kpis(data: dict) -> EvalCheck:
+    kpis = data.get("kpis") or []
+    return EvalCheck(
+        name="Has KPIs",
+        passed=isinstance(kpis, list) and len(kpis) > 0,
+        detail=f"{len(kpis)} KPI(s)" if kpis else "No KPIs defined",
+    )
+
+def _check_has_timeline(data: dict) -> EvalCheck:
+    weeks = data.get("timeline_weeks")
+    return EvalCheck(
+        name="Has Timeline",
+        passed=isinstance(weeks, (int, float)) and weeks > 0,
+        detail=f"{weeks} week(s)" if weeks else "No timeline defined",
+    )
+
+def _check_campaign_next_actions(data: dict) -> EvalCheck:
+    actions = data.get("next_actions") or []
+    return EvalCheck(
+        name="Has Next Actions",
+        passed=isinstance(actions, list) and len(actions) > 0,
+        detail=f"{len(actions)} action(s)" if actions else "No next actions",
+    )
+
+
 # -- Rule registry -----------------------------------------------------------
 
 EVAL_RULES: dict[str, List[CheckFunc]] = {
@@ -89,6 +156,16 @@ EVAL_RULES: dict[str, List[CheckFunc]] = {
         _check_has_confidence,
         _check_action_details,
         _check_angle_details,
+    ],
+    "campaign_plan": [
+        _check_has_campaign_name,
+        _check_has_objectives,
+        _check_has_target_segments,
+        _check_has_channel_strategy,
+        _check_has_content_themes,
+        _check_has_kpis,
+        _check_has_timeline,
+        _check_campaign_next_actions,
     ],
 }
 

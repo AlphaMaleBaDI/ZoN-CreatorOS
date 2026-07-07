@@ -123,3 +123,47 @@ class TestEvaluationEngine:
         before = dict(original)
         engine.evaluate(original, "launch_plan")
         assert original == before
+
+
+class TestCampaignEval:
+
+    def test_campaign_checks_registered(self):
+        assert "campaign_plan" in EVAL_RULES
+        assert len(EVAL_RULES["campaign_plan"]) == 8
+
+    def test_perfect_campaign(self):
+        engine = EvaluationEngine()
+        artifact = {
+            "campaign_name": "Digital Diaspora Launch",
+            "campaign_objectives": ["Build awareness", "Drive streams"],
+            "target_segments": ["Core fans", "New listeners"],
+            "channel_strategy": ["Social media", "Email"],
+            "content_themes": ["Behind the scenes", "Visualizers"],
+            "kpis": ["10k streams first week"],
+            "timeline_weeks": 12,
+            "next_actions": [{"action": "Finalize budget", "why": "Need cost clarity"}],
+        }
+        result = engine.evaluate(artifact, "campaign_plan")
+        assert result.score >= 0.8
+        assert result.status == "ready"
+
+    def test_empty_campaign(self):
+        engine = EvaluationEngine()
+        result = engine.evaluate({}, "campaign_plan")
+        assert result.score == 0.0
+        assert result.status == "incomplete"
+
+    def test_missing_kpis_is_detected(self):
+        engine = EvaluationEngine()
+        artifact = {"campaign_name": "Test", "campaign_objectives": ["Obj1"]}
+        result = engine.evaluate(artifact, "campaign_plan")
+        kpi_check = next(c for c in result.checks if c.name == "Has KPIs")
+        assert kpi_check.passed is False
+
+    def test_campaign_deterministic(self):
+        engine = EvaluationEngine()
+        artifact = {"campaign_name": "Test", "campaign_objectives": ["Obj1"], "kpis": ["KPI1"]}
+        r1 = engine.evaluate(artifact, "campaign_plan")
+        r2 = engine.evaluate(artifact, "campaign_plan")
+        assert r1.score == r2.score
+        assert r1.checks == r2.checks

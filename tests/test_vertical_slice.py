@@ -149,7 +149,7 @@ class TestOrchestratorAgent:
         agent = OrchestratorAgent()
         context = ContextObject(
             workspace_id=uuid4(),
-            user_request="Launch a new album campaign",
+            user_request="Create a launch plan for a new album",
             timestamp=time.time()
         )
         result = agent.plan_execution(context)

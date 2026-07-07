@@ -116,7 +116,7 @@ class Kernel:
         logger.info(f"  Context assembly in {self._metrics.context_assembly_ms}ms.")
         return ctx
 
-    def execute(self, context: ContextObject) -> Any:
+    def execute(self, context: ContextObject, intent: str = "") -> Any:
         if not self.initialized:
             raise RuntimeError(
                 "Kernel invariant violated: "
@@ -124,7 +124,7 @@ class Kernel:
             )
         t0 = time.perf_counter()
 
-        result = self.orchestrator.run_flow(context)
+        result = self.orchestrator.run_flow(context, intent=intent)
         self._metrics.orchestration_ms = round((time.perf_counter() - t0) * 1000, 1)
         self._metrics.provider = self.orchestrator._last_provider or ""
 
@@ -162,6 +162,35 @@ class Kernel:
         result._pipeline_metrics = self._metrics
 
         return result
+
+    def continue_production(self, user_request: str, project_id: Optional[UUID] = None) -> Any:
+        pie = self.pie.analyze(
+            artifact_type=self.orchestrator._last_artifact_type or "launch_plan",
+            existing_artifact_types=self._get_existing_types(),
+        )
+        if not pie.recommended_next:
+            logger.info("PIE: no next artifact recommended — production complete or unknown path")
+            return None
+
+        next_type = pie.recommended_next[0]
+        intent_map = {
+            "campaign_plan": "campaign",
+            "content_calendar": "content",
+            "press_release": "press",
+            "budget_plan": "budget",
+            "content_script": "content",
+            "production_schedule": "production",
+            "media_kit": "media",
+            "press_distribution": "press",
+            "resource_allocation": "resources",
+        }
+        intent = intent_map.get(next_type, "")
+
+        context = self.assemble_context(
+            user_request=user_request,
+            project_id=project_id,
+        )
+        return self.execute(context, intent=intent)
 
     def _get_existing_types(self) -> Set[str]:
         types = set()
