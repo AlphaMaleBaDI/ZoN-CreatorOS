@@ -79,3 +79,27 @@ class TestProductionIntelligenceEngine:
         assessment = pie.analyze("launch_plan", {"launch_plan"})
         for rec in assessment.recommended_next:
             assert rec in PRODUCTION_KNOWLEDGE_GRAPH["launch_plan"]
+
+    def test_narrative_present_for_known_type(self):
+        pie = ProductionIntelligenceEngine()
+        assessment = pie.analyze("launch_plan", {"launch_plan"})
+        assert len(assessment.narrative) > 0
+        assert "Recommended next step" in assessment.narrative
+
+    def test_narrative_reflects_recommendation(self):
+        pie = ProductionIntelligenceEngine()
+        assessment = pie.analyze("launch_plan", {"launch_plan"})
+        if assessment.recommended_next:
+            rec = assessment.recommended_next[0].replace("_", " ").title()
+            assert rec in assessment.narrative
+
+    def test_narrative_unknown_type(self):
+        pie = ProductionIntelligenceEngine()
+        assessment = pie.analyze("unknown_type", set())
+        assert assessment.narrative == "Artifact type not recognized. Production assessment is unavailable."
+
+    def test_narrative_for_completed_production(self):
+        pie = ProductionIntelligenceEngine()
+        all_types = set(PRODUCTION_KNOWLEDGE_GRAPH.keys())
+        assessment = pie.analyze("launch_plan", all_types)
+        assert "completed" in assessment.narrative.lower() or "complete" in assessment.narrative.lower()

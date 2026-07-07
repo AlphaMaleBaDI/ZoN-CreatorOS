@@ -267,6 +267,10 @@ def main():
         for item in pie.recommended_next:
             print(f"    {BOLD}>{RESET} {item}")
         print()
+
+        if pie.narrative:
+            print(f"  {DIM}{pie.narrative}{RESET}")
+            print()
     pause(1.0)
 
     # ===================================================================

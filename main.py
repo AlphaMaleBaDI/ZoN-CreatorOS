@@ -18,7 +18,7 @@ from services.artifact_service import ArtifactService
 from services.snapshot_service import SnapshotService
 from memory.creator_profile import CreatorProfile
 
-app = FastAPI(title="ZoN CreatorOS", version="0.3.0")
+app = FastAPI(title="ZoN CreatorOS", version="0.4.0")
 
 app.add_middleware(
     CORSMiddleware,

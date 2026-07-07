@@ -47,6 +47,20 @@ def _existing_types(existing_artifacts: list[dict]) -> Set[str]:
     return types
 
 
+NARRATIVE_MAP: dict[str, str] = {
+    "launch_plan": "Launch strategy established. The creative vision is now documented with a structured release approach.",
+    "campaign_plan": "Campaign strategy completed. Audience messaging and channel positioning are defined.",
+    "content_calendar": "Content calendar ready. Scheduled posts and platform cadence aligned with the campaign.",
+    "press_release": "Press materials prepared. Media outreach and announcement messaging are ready.",
+    "budget_plan": "Budget planned. Resource allocation and cost structure are documented.",
+    "content_script": "Content scripts written. Video, audio, and written materials are drafted.",
+    "production_schedule": "Production timeline set. Milestones and deliverables are scheduled.",
+    "media_kit": "Media kit assembled. Brand assets, bios, and press materials are packaged.",
+    "press_distribution": "Press distribution configured. Media contacts and submission deadlines are set.",
+    "resource_allocation": "Resources allocated. Team, tools, and budget assignments are finalized.",
+}
+
+
 class ProductionIntelligenceEngine:
     """
     PIE v0 — stateless decision service owned by the Kernel.
@@ -75,6 +89,7 @@ class ProductionIntelligenceEngine:
                 recommended_next=[],
                 production_progress=1.0,
                 confidence=1.0,
+                narrative="Artifact type not recognized. Production assessment is unavailable.",
             )
 
         reachable = _reachable_types(artifact_type, self.graph)
@@ -93,6 +108,7 @@ class ProductionIntelligenceEngine:
         graph_density = total_graph / max(len(self.graph), 1)
         confidence = min(1.0, 0.7 + (progress * 0.2) + (graph_density * 0.1))
 
+        narrative = self._build_narrative(artifact_type, completed_sorted, recommended)
         logger.info(
             f"PIE: type={artifact_type} reachable={total} "
             f"completed={len(completed_sorted)} missing={len(missing_sorted)} "
@@ -106,7 +122,30 @@ class ProductionIntelligenceEngine:
             recommended_next=recommended,
             production_progress=round(progress, 2),
             confidence=round(confidence, 2),
+            narrative=narrative,
         )
+
+    @staticmethod
+    def _build_narrative(artifact_type: str, completed: list[str], recommended: list[str]) -> str:
+        parts = []
+        last_completed = completed[-1] if completed else artifact_type
+        line = NARRATIVE_MAP.get(last_completed, "")
+        if line:
+            parts.append(line)
+        state = ProductionIntelligenceEngine._derive_state(len(completed) / max(len(completed) + len(recommended), 1))
+        if state == "planning":
+            parts.append("Production is in early stages. Core foundation is being established.")
+        elif state == "production":
+            parts.append("Production has advanced. Momentum is building toward completion.")
+        elif state == "review":
+            parts.append("Most deliverables are complete. Focus is shifting to quality review.")
+        elif state == "publishing":
+            parts.append("Production is nearly complete. Final deliverables are being prepared.")
+        elif state == "completed":
+            parts.append("All production deliverables are complete. The project is ready.")
+        if recommended:
+            parts.append(f"Recommended next step: {recommended[0].replace('_', ' ').title()}.")
+        return " ".join(parts)
 
     @staticmethod
     def _derive_state(progress: float) -> str:

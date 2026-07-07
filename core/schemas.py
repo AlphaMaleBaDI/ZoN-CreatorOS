@@ -30,6 +30,7 @@ class PIEAssessment(BaseModel):
     recommended_next: List[str] = Field(default_factory=list)
     production_progress: float = 0.0
     confidence: float = 0.0
+    narrative: str = ""
 
 
 class EvalCheck(BaseModel):

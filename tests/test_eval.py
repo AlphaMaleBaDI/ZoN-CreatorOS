@@ -167,3 +167,40 @@ class TestCampaignEval:
         r2 = engine.evaluate(artifact, "campaign_plan")
         assert r1.score == r2.score
         assert r1.checks == r2.checks
+
+
+class TestContentCalendarEval:
+
+    def test_content_checks_registered(self):
+        assert "content_calendar" in EVAL_RULES
+        assert len(EVAL_RULES["content_calendar"]) == 8
+
+    def test_perfect_content_calendar(self):
+        engine = EvaluationEngine()
+        artifact = {
+            "campaign_name": "Digital Diaspora Campaign",
+            "content_strategy": "A" * 60,
+            "weeks": [{"week": i, "theme": f"Week {i}", "actions": ["Post"]} for i in range(1, 7)],
+            "platform_schedule": ["Instagram 3x week", "TikTok daily"],
+            "post_cadence": "3 posts per week per platform",
+            "milestones": ["Single release", "EP launch"],
+            "dependencies": ["Artwork finalized"],
+            "next_actions": [{"action": "Design templates", "why": "Need consistent look"}],
+        }
+        result = engine.evaluate(artifact, "content_calendar")
+        assert result.score >= 0.8
+        assert result.status == "ready"
+
+    def test_empty_content_calendar(self):
+        engine = EvaluationEngine()
+        result = engine.evaluate({}, "content_calendar")
+        assert result.score == 0.0
+        assert result.status == "incomplete"
+
+    def test_content_deterministic(self):
+        engine = EvaluationEngine()
+        artifact = {"campaign_name": "Test", "content_strategy": "A" * 60, "weeks": [{"week": 1}]}
+        r1 = engine.evaluate(artifact, "content_calendar")
+        r2 = engine.evaluate(artifact, "content_calendar")
+        assert r1.score == r2.score
+        assert r1.checks == r2.checks

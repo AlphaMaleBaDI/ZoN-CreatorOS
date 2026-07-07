@@ -145,6 +145,73 @@ def _check_campaign_next_actions(data: dict) -> EvalCheck:
     )
 
 
+# -- Content calendar checks ------------------------------------------------
+
+def _check_has_campaign_name_content(data: dict) -> EvalCheck:
+    name = data.get("campaign_name") or ""
+    return EvalCheck(
+        name="Has Campaign Name",
+        passed=isinstance(name, str) and len(name) > 3,
+        detail=f"Name: '{name}'" if name else "No campaign name",
+    )
+
+def _check_has_content_strategy(data: dict) -> EvalCheck:
+    strat = data.get("content_strategy") or ""
+    return EvalCheck(
+        name="Has Content Strategy",
+        passed=isinstance(strat, str) and len(strat) > 50,
+        detail=f"Strategy length: {len(strat)} chars" if strat else "No content strategy",
+    )
+
+def _check_has_weeks(data: dict) -> EvalCheck:
+    weeks = data.get("weeks") or []
+    return EvalCheck(
+        name="Has Weekly Breakdown",
+        passed=isinstance(weeks, list) and len(weeks) >= 4,
+        detail=f"{len(weeks)} week(s)" if weeks else "No weekly breakdown",
+    )
+
+def _check_has_platform_schedule(data: dict) -> EvalCheck:
+    platforms = data.get("platform_schedule") or []
+    return EvalCheck(
+        name="Has Platform Schedule",
+        passed=isinstance(platforms, list) and len(platforms) > 0,
+        detail=f"{len(platforms)} platform(s)" if platforms else "No platform schedule",
+    )
+
+def _check_has_post_cadence(data: dict) -> EvalCheck:
+    cadence = data.get("post_cadence") or ""
+    return EvalCheck(
+        name="Has Post Cadence",
+        passed=isinstance(cadence, str) and len(cadence) > 10,
+        detail=f"Cadence defined" if cadence else "No post cadence",
+    )
+
+def _check_has_milestones(data: dict) -> EvalCheck:
+    milestones = data.get("milestones") or []
+    return EvalCheck(
+        name="Has Milestones",
+        passed=isinstance(milestones, list) and len(milestones) > 0,
+        detail=f"{len(milestones)} milestone(s)" if milestones else "No milestones",
+    )
+
+def _check_has_dependencies(data: dict) -> EvalCheck:
+    deps = data.get("dependencies") or []
+    return EvalCheck(
+        name="Has Dependencies",
+        passed=isinstance(deps, list) and len(deps) > 0,
+        detail=f"{len(deps)} dependency(ies)" if deps else "No dependencies listed",
+    )
+
+def _check_has_content_next_actions(data: dict) -> EvalCheck:
+    actions = data.get("next_actions") or []
+    return EvalCheck(
+        name="Has Next Actions",
+        passed=isinstance(actions, list) and len(actions) > 0,
+        detail=f"{len(actions)} action(s)" if actions else "No next actions",
+    )
+
+
 # -- Rule registry -----------------------------------------------------------
 
 EVAL_RULES: dict[str, List[CheckFunc]] = {
@@ -166,6 +233,16 @@ EVAL_RULES: dict[str, List[CheckFunc]] = {
         _check_has_kpis,
         _check_has_timeline,
         _check_campaign_next_actions,
+    ],
+    "content_calendar": [
+        _check_has_campaign_name_content,
+        _check_has_content_strategy,
+        _check_has_weeks,
+        _check_has_platform_schedule,
+        _check_has_post_cadence,
+        _check_has_milestones,
+        _check_has_dependencies,
+        _check_has_content_next_actions,
     ],
 }
 
