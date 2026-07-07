@@ -32,12 +32,28 @@ class PIEAssessment(BaseModel):
     confidence: float = 0.0
 
 
+class EvalCheck(BaseModel):
+    name: str
+    passed: bool
+    detail: str = ""
+
+class EvalAssessment(BaseModel):
+    artifact_type: str
+    status: str = "incomplete"
+    score: float = 0.0
+    checks: List[EvalCheck] = Field(default_factory=list)
+    recommendations: List[str] = Field(default_factory=list)
+    eval_time_ms: float = 0.0
+    confidence: float = 0.0
+
+
 class PipelineMetrics(BaseModel):
     kernel_boot_ms: float = 0.0
     context_assembly_ms: float = 0.0
     orchestration_ms: float = 0.0
     snapshot_ms: float = 0.0
     pie_ms: float = 0.0
+    eval_ms: float = 0.0
     total_ms: float = 0.0
     provider: str = ""
     pipeline_version: str = "0.3.0"

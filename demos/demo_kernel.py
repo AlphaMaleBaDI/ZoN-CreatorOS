@@ -263,8 +263,22 @@ def main():
             f"provider={s.get('provider')}  intent={s.get('intent')}  "
             f"confidence={s.get('confidence')}")
 
-    # -- 8. Pipeline Metrics -------------------------------------------
-    section("8. Pipeline Metrics")
+    # -- 8. Evaluation ------------------------------------------------
+    section("8. Evaluation Score")
+
+    eval_result = getattr(result, "_eval_assessment", None)
+    if eval_result:
+        log("[OK]", f"Overall Score", f"{eval_result.score:.0%} — {eval_result.status}")
+        for check in eval_result.checks:
+            mark = "[OK]" if check.passed else "[--]"
+            log(mark, check.name, check.detail)
+        if eval_result.recommendations:
+            log("[*]", "Recommendations", "; ".join(eval_result.recommendations))
+    else:
+        log("[--]", "Evaluation unavailable")
+
+    # -- 9. Pipeline Metrics -------------------------------------------
+    section("9. Pipeline Metrics")
 
     metrics = getattr(result, "_pipeline_metrics", None)
     if metrics:
@@ -273,12 +287,13 @@ def main():
         log("[OK]", "Orchestration (API call)", f"{metrics.orchestration_ms}ms")
         log("[OK]", "Snapshot recording", f"{metrics.snapshot_ms}ms")
         log("[OK]", "PIE assessment", f"{metrics.pie_ms}ms")
+        log("[OK]", "Evaluation", f"{metrics.eval_ms}ms")
         log("[OK]", f"Total pipeline ({metrics.provider})", f"{metrics.total_ms}ms")
     else:
         log("[--]", "Metrics unavailable")
 
-    # -- 9. Output Preview ---------------------------------------------
-    section("9. Generated Launch Plan (Run 1)")
+    # -- 10. Output Preview ---------------------------------------------
+    section("10. Generated Launch Plan (Run 1)")
 
     print(f"  Strategy:")
     for line in textwrap.wrap(result.release_strategy, width=70):
@@ -362,7 +377,16 @@ def main():
         f"{len(snapshots)} execution snapshots recorded"
     ))
 
-    # V7: Pipeline Metrics
+    # V7: Evaluation Quality Scoring
+    eval_ok = eval_result is not None and eval_result.score >= 0
+    validation_results.append((
+        "7. Evaluation Quality Score",
+        eval_ok,
+        f"score={eval_result.score:.0%} status={eval_result.status} "
+        f"passed={sum(1 for c in eval_result.checks if c.passed)}/{len(eval_result.checks)} checks"
+    ))
+
+    # V8: Pipeline Metrics
     metrics_ok = metrics is not None and metrics.kernel_boot_ms > 0
     validation_results.append((
         "8. Pipeline Metrics",
@@ -372,7 +396,7 @@ def main():
         f"total={metrics.total_ms}ms"
     ))
 
-    # V8: Observability
+    # V9: Observability
     obs_ok = len(demo_log) > 25
     validation_results.append((
         "7. Observability",

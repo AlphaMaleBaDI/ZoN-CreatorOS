@@ -7,6 +7,7 @@ from core.schemas import ContextObject, PIEAssessment, PipelineMetrics
 from core.context_assembly import ContextAssemblyEngine
 from core.orchestration import Orchestrator
 from core.pie import ProductionIntelligenceEngine
+from core.eval import EvaluationEngine
 from services.workspace_service import WorkspaceService
 from services.profile_service import ProfileService
 from services.artifact_service import ArtifactService
@@ -33,6 +34,7 @@ class Kernel:
         self.context_engine = ContextAssemblyEngine()
         self.orchestrator = Orchestrator(artifact_service=self.artifact_service)
         self.pie = ProductionIntelligenceEngine()
+        self.evaluator = EvaluationEngine()
 
         self.initialized = False
         self.current_workspace = None
@@ -146,6 +148,15 @@ class Kernel:
         )
         self._metrics.pie_ms = round((time.perf_counter() - t2) * 1000, 1)
         result._pie_assessment = pie_assessment
+
+        t3 = time.perf_counter()
+        artifact_data = result.model_dump() if hasattr(result, "model_dump") else dict(result)
+        eval_assessment = self.evaluator.evaluate(
+            artifact=artifact_data,
+            artifact_type=self.orchestrator._last_artifact_type or "launch_plan",
+        )
+        self._metrics.eval_ms = round((time.perf_counter() - t3) * 1000, 1)
+        result._eval_assessment = eval_assessment
 
         self._metrics.total_ms = round((time.perf_counter() - t0) * 1000, 1)
         result._pipeline_metrics = self._metrics
