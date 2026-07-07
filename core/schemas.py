@@ -1,3 +1,4 @@
+from enum import Enum
 from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
 from uuid import UUID, uuid4
@@ -20,7 +21,30 @@ class MemoryScope(BaseModel):
     project_id: Optional[UUID] = None
     tags: List[str] = Field(default_factory=list)
 
-PRODUCTION_STATES = ["planning", "production", "review", "publishing", "completed"]
+
+class ProductionState(str, Enum):
+    IDEATION = "ideation"
+    PLANNING = "planning"
+    PRODUCTION = "production"
+    PUBLISHING = "publishing"
+    RELEASED = "released"
+    ARCHIVED = "archived"
+
+
+class StateEvidence(BaseModel):
+    artifact_type: str
+    exists: bool
+    eval_score: Optional[float] = None
+    eval_passed: Optional[bool] = None
+
+
+class StateAssessment(BaseModel):
+    current_state: ProductionState
+    evidence: List[StateEvidence] = Field(default_factory=list)
+    requirements: List[str] = Field(default_factory=list)
+    next_state: Optional[ProductionState] = None
+    can_transition: bool = False
+    blockers: List[str] = Field(default_factory=list)
 
 
 class PIEAssessment(BaseModel):
@@ -31,6 +55,7 @@ class PIEAssessment(BaseModel):
     production_progress: float = 0.0
     confidence: float = 0.0
     narrative: str = ""
+    state_assessment: Optional[StateAssessment] = None
 
 
 class EvalCheck(BaseModel):
@@ -57,7 +82,7 @@ class PipelineMetrics(BaseModel):
     eval_ms: float = 0.0
     total_ms: float = 0.0
     provider: str = ""
-    pipeline_version: str = "0.3.0"
+    pipeline_version: str = "0.5.0"
 
 
 class ContextObject(BaseModel):

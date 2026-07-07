@@ -271,6 +271,39 @@ def main():
         if pie.narrative:
             print(f"  {DIM}{pie.narrative}{RESET}")
             print()
+
+        state = getattr(pie, "state_assessment", None)
+        if state:
+            dim("  Production Phase")
+            state_colors = {
+                "ideation": YELLOW, "planning": CYAN, "production": GREEN,
+                "publishing": MAGENTA, "released": GREEN, "archived": DIM,
+            }
+            sc = state_colors.get(state.current_state.value, YELLOW)
+            print(f"  {sc}{BOLD}{state.current_state.value.upper()}{RESET}")
+            print()
+
+            passing = [e for e in state.evidence if e.exists]
+            if passing:
+                dim("  Evidence Completed")
+                for e in passing[:4]:
+                    score_str = f" (eval {e.eval_score:.0%})" if e.eval_score is not None else ""
+                    ok(f"{e.artifact_type.replace('_', ' ').title()}{score_str}")
+                if len(passing) > 4:
+                    dim(f"    ... and {len(passing) - 4} more")
+                print()
+
+            if state.requirements:
+                dim("  Requirements to Advance")
+                for r in state.requirements:
+                    dim(f"    {r}")
+                print()
+
+            if state.blockers:
+                dim("  Blockers")
+                for b in state.blockers:
+                    print(f"    {YELLOW}{b}{RESET}")
+                print()
     pause(1.0)
 
     # ===================================================================

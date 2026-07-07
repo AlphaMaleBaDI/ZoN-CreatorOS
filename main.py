@@ -11,14 +11,15 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from api.memory_routes import router as memory_router
 from core.kernel import Kernel
-from core.schemas import ContextObject
+from core.schemas import ContextObject, ProductionState
+from core.pie import ProductionIntelligenceEngine
 from services.workspace_service import WorkspaceService
 from services.profile_service import ProfileService
 from services.artifact_service import ArtifactService
 from services.snapshot_service import SnapshotService
 from memory.creator_profile import CreatorProfile
 
-app = FastAPI(title="ZoN CreatorOS", version="0.4.0")
+app = FastAPI(title="ZoN CreatorOS", version="0.5.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,6 +30,8 @@ app.add_middleware(
 )
 
 app.include_router(memory_router, prefix="/memory", tags=["Memory"])
+
+pie_engine = ProductionIntelligenceEngine()
 
 workspace_service = WorkspaceService()
 profile_service = ProfileService()
@@ -145,6 +148,29 @@ def get_artifact(workspace_id: UUID, artifact_id: str):
 @app.get("/workspaces/{workspace_id}/snapshots")
 def list_snapshots(workspace_id: UUID):
     return snapshot_service.list_snapshots(workspace_id)
+
+
+# -- Production State endpoint (Mission 009) -----------------------------------
+
+@app.get("/workspaces/{workspace_id}/state")
+def get_production_state(workspace_id: UUID):
+    artifact_ids = artifact_service.list_artifacts(workspace_id)
+    existing_types = set()
+    eval_scores = {}
+    for aid in artifact_ids:
+        art = artifact_service.retrieve_artifact(aid, workspace_id)
+        if art:
+            atype = art.get("artifact_type")
+            if atype:
+                existing_types.add(atype)
+    state_assessment = pie_engine.determine_state(
+        existing_artifact_types=existing_types,
+        eval_scores=eval_scores,
+    )
+    return {
+        "workspace_id": str(workspace_id),
+        "state_assessment": state_assessment.model_dump(),
+    }
 
 
 # -- Launch plan generation via Kernel ---------------------------------

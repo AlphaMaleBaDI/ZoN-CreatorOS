@@ -1,6 +1,6 @@
 import time
 import logging
-from typing import Optional, Any, List, Set
+from typing import Optional, Any, Dict, List, Set
 from uuid import UUID
 
 from core.schemas import ContextObject, PIEAssessment, PipelineMetrics
@@ -142,21 +142,23 @@ class Kernel:
         self._metrics.snapshot_ms = round((time.perf_counter() - t1) * 1000, 1)
 
         t2 = time.perf_counter()
-        pie_assessment = self.pie.analyze(
-            artifact_type=self.orchestrator._last_artifact_type or "launch_plan",
-            existing_artifact_types=self._get_existing_types(),
-        )
-        self._metrics.pie_ms = round((time.perf_counter() - t2) * 1000, 1)
-        result._pie_assessment = pie_assessment
-
-        t3 = time.perf_counter()
         artifact_data = result.model_dump() if hasattr(result, "model_dump") else dict(result)
         eval_assessment = self.evaluator.evaluate(
             artifact=artifact_data,
             artifact_type=self.orchestrator._last_artifact_type or "launch_plan",
         )
-        self._metrics.eval_ms = round((time.perf_counter() - t3) * 1000, 1)
+        self._metrics.eval_ms = round((time.perf_counter() - t2) * 1000, 1)
         result._eval_assessment = eval_assessment
+
+        t3 = time.perf_counter()
+        eval_scores = self._extract_eval_scores(eval_assessment)
+        pie_assessment = self.pie.analyze(
+            artifact_type=self.orchestrator._last_artifact_type or "launch_plan",
+            existing_artifact_types=self._get_existing_types(),
+            eval_scores=eval_scores,
+        )
+        self._metrics.pie_ms = round((time.perf_counter() - t3) * 1000, 1)
+        result._pie_assessment = pie_assessment
 
         self._metrics.total_ms = round((time.perf_counter() - t0) * 1000, 1)
         result._pipeline_metrics = self._metrics
@@ -167,6 +169,7 @@ class Kernel:
         pie = self.pie.analyze(
             artifact_type=self.orchestrator._last_artifact_type or "launch_plan",
             existing_artifact_types=self._get_existing_types(),
+            eval_scores={},
         )
         if not pie.recommended_next:
             logger.info("PIE: no next artifact recommended — production complete or unknown path")
@@ -201,3 +204,14 @@ class Kernel:
         if self.orchestrator._last_artifact_type:
             types.add(self.orchestrator._last_artifact_type)
         return types
+
+    def _extract_eval_scores(self, eval_assessment) -> Dict[str, float]:
+        """Extract per-artifact eval scores for state derivation.
+
+        Since the kernel only evaluates the current artifact, we return
+        a single-entry dict. Future iterations may aggregate historical scores.
+        """
+        scores = {}
+        if eval_assessment:
+            scores[eval_assessment.artifact_type] = eval_assessment.score
+        return scores
