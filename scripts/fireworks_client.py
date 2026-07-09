@@ -19,22 +19,24 @@ def _ensure_log_dir():
 
 def _log_raw(prompt: str, response, latency_s: float):
     _ensure_log_dir()
-    path = os.path.join(_LOG_DIR, f"latest.json")
+    path = os.path.join(_LOG_DIR, "latest.json")
+    usage = response.usage
     entry = {
         "timestamp": datetime.utcnow().isoformat(),
         "request": {"prompt": prompt},
         "response": {
-            "text": response,
+            "text": response.choices[0].message.content if response.choices else "",
+            "raw": response.model_dump(),
             "usage": {
-                "prompt_tokens": getattr(response, "usage", None) and getattr(response.usage, "prompt_tokens", None),
-                "completion_tokens": getattr(response, "usage", None) and getattr(response.usage, "completion_tokens", None),
-                "total_tokens": getattr(response, "usage", None) and getattr(response.usage, "total_tokens", None),
+                "prompt_tokens": usage.prompt_tokens if usage else None,
+                "completion_tokens": usage.completion_tokens if usage else None,
+                "total_tokens": usage.total_tokens if usage else None,
             },
         },
         "latency_s": round(latency_s, 2),
     }
-    with open(path, "w") as f:
-        json.dump(entry, f, indent=2)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(entry, f, indent=2, ensure_ascii=False)
 
 
 def create_client() -> OpenAI:
@@ -90,5 +92,5 @@ def print_stats(result: dict, label: str = "Response"):
     print(f"{'Model:':<20} {result['model']}")
     print(f"{'Latency:':<20} {result['latency_s']}s")
     if result["prompt_tokens"] is not None:
-        print(f"{'Tokens:':<20} {result['prompt_tokens']} prompt → {result['completion_tokens']} completion ({result['total_tokens']} total)")
+        print(f"{'Tokens:':<20} {result['prompt_tokens']} prompt -> {result['completion_tokens']} completion ({result['total_tokens']} total)")
     print(f"{'Response:':<20} {result['text']}")
