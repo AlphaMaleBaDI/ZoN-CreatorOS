@@ -327,12 +327,18 @@ TemplateEngine           <span style="color:var(--gold)">AMDEngine</span>
                     Fireworks API
                     (OpenAI-compatible)
                           │
-                     deepseek-v4-flash
-                          │
-                     Artifact
-                          │
-                    <span style="color:var(--dim)">↓ fallback on failure</span>
-                    TemplateEngine</div>
+                      deepseek-v4-flash
+                           │
+                      Artifact
+                           │
+                           ▼
+                      Lineage
+                           │
+                           ▼
+                     Workspace
+                           │
+                     <span style="color:var(--dim)">↓ fallback on failure</span>
+                     TemplateEngine</div>
     <div style="margin-top:1.5rem; display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
       <div class="stat">
         <div class="num">1</div>
@@ -438,7 +444,10 @@ Production Engine
  └───────┘
      │
      ▼
-Rich Artifact</div>
+ Artifact
+     │
+     ▼
+Lineage → Workspace</div>
       </div>
     </div>
     <p style="margin-top:1.5rem; font-size:0.9rem; color:var(--dim);">
