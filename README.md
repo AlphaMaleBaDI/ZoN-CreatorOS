@@ -1,115 +1,159 @@
-# ZoN CreatorOS
+# CreatorOS
 
-A **context-native creative operating system** that transforms fragmented ideas, memories, and goals into production-ready artifacts through persistent context, intelligent orchestration, and domain-specific production engines.
+> An AI operating system for creators.
 
-Unlike traditional chat-only assistants, ZoN CreatorOS combines persistent scoped memories, active creator style profiles, and unified multi-agent orchestrations to translate scattered creator logs directly into structured plans, timelines, and calendars.
+Most AI creative tools begin generating immediately. CreatorOS begins by understanding.
+
+Instead of prompting a language model to produce content, CreatorOS guides a creator through a structured conversation, discovers the emotional core of the idea, and only then generates production-ready artifacts.
+
+This separation between conversation, reasoning, and production makes the generation engine swappable without changing the creator experience.
+
+<!-- Screenshot: Conversation → Insight → Artifact → Workspace -->
 
 ---
 
-## 🚀 The Product Vision
-* **Context over Prompts:** Instead of starting every session cold, CreatorOS aggregates project scopes, user style vectors, and past vector histories before running reasoning cycles.
-* **Separation of Behavior & Storage:** By introducing a dedicated **Services Layer** (`profile`, `memory`, `artifact`, `workspace` services), reasoning agents remain decoupled from underlying database states (FAISS/Knowledge Graphs).
+## Why CreatorOS?
+
+Creative ideas are fragile. When you share a half-formed vision, the last thing you need is a system that immediately tries to fill a template.
+
+CreatorOS treats the first exchange the way a good editor treats a first draft — with curiosity, not extraction. It follows the emotion before it follows the format. It earns the right to infer by first demonstrating understanding.
+
+The result is a creative partnership that feels like collaboration, not form-filling.
 
 ---
 
-## 🏗️ Layered Architecture Layout
+## Demo
 
-```text
-ZoN CreatorOS
-│
-├── Experience Layer
-│   ├── Creator Dashboard (Streamlit UI)
-│   ├── Workspace Studio (Project dashboard)
-│   ├── Memory Explorer (FAISS search & graph visualizer)
-│   ├── Workflow Builder (Interactive tasks/goals)
-│   └── Artifact Review Center (Structured deliverables view)
-│
-├── Application Layer
-│   ├── API Gateway (FastAPI)
-│   ├── Context Assembly Engine (State + profile + memory assembly)
-│   ├── Session Manager (Cross-session context retention)
-│   └── Security Layer (Local NPU data boundary)
-│
-├── Intelligence Layer (LangGraph Agents)
-│   ├── Orchestrator Agent (Task coordinator)
-│   ├── Research Agent (Memory & web lookup)
-│   ├── Planning Agent (Timeline & milestone generation)
-│   ├── Memory Agent (Knowledge graph consolidation)
-│   └── Workflow Agent (Action execution helper)
-│
-├── Artifacts Layer (Output Deliverables)
-│   ├── Launch Plans (Release strategies & timelines)
-│   ├── Marketing Campaigns (Angles & copy draft templates)
-│   ├── Content Calendars (Multi-channel posting schedules)
-│   ├── Project Roadmaps (Milestones & requirements)
-│   └── Execution Reports (Session outcomes & citation maps)
-│
-├── Memory Layer
-│   ├── FAISS Vector Store (Raw semantic storage)
-│   ├── Knowledge Graph (Linked metadata JSON-LD)
-│   ├── Project Memory (Scoped via Workspace ID, Project ID, and Memory Scope)
-│   ├── Creator Profile Engine (Style, brand voice, preferences, long-term goals)
-│   └── Vibra State Engine (Adaptive creative state tracker)
-│
-├── Services Layer (Business Logic Glue)
-│   ├── Profile Service (Identity configuration & retrieval)
-│   ├── Memory Service (Vector/graph orchestration)
-│   ├── Artifact Service (JSON payload save/load operations)
-│   └── Workspace Service (Isolated scope creator)
-│
-├── Compute Layer
-│   ├── Local Ryzen AI NPU (On-device ONNX/PyTorch runs)
-│   ├── AMD Instinct GPUs (Cloud-based cluster inference)
-│   ├── Prefill Pool (Optimized for context processing)
-│   └── Decode Pool (Optimized for token generation)
-│
-└── Infrastructure Layer
-    ├── FastAPI (API framework)
-    ├── LangGraph (Agent state orchestration)
-    ├── LangChain (LLM wrappers & utilities)
-    ├── vLLM / SGLang (AMD-optimized serving engines)
-    └── ROCm 7 / "The Rock" (GPU compute stack)
+A creator enters: *"I want to make an AI film."*
+
+Five conversational turns later, CreatorOS discovers the emotional core of the idea and produces a structured Film Concept.
+
+| Turn | You | CreatorOS |
+|---|---|---|
+| 1 | "I want to make an AI film" | Responds with curiosity — "What feeling do you want your audience to leave with?" |
+| 2 | "Hope" | Follows the emotion — "What kind of hope is this?" |
+| 3 | "An AI learns what it means to hope" | **Insight moment** — "I think it might be about loneliness — or belonging" |
+| 4 | "Yes, that's exactly it" | Proposes development — "Shall I develop this into a full concept?" |
+| 5 | "Yes, go ahead" | Generates a complete Film Concept with logline, theme, characters, world, three-act arc, and visual style |
+
+The insight on Turn 3 is the moment the demo is built around. The system has earned the right to infer — it has confirmed emotional core and theme — and the insight is unexpected. The question "Does that resonate?" invites collaboration, not compliance.
+
+---
+
+## Architecture
+
+```
+Creator
+   │
+   ▼
+Conversation ─── Console (Alpine.js) → FastAPI
+   │
+   ▼
+Observer ─── Tracks beliefs, emotional core, themes
+   │
+   ▼
+Reasoning ─── Generates insight, synthesizes reflection, suggests action
+   │
+   ▼
+Understanding ─── CurrentUnderstanding structured state
+   │
+   ▼
+Production Engine
+   │
+   ┌─────────────────┐
+   │  TemplateEngine  │  (current default — deterministic)
+   │   AMDEngine      │  (hackathon implementation — AMD inference)
+   └─────────────────┘
+   │
+   ▼
+Artifact ─── Film Concept, Launch Plan, etc.
+   │
+   ▼
+Lineage ─── Artifact dependency chain
+   │
+   ▼
+Workspace ─── Visual dashboard (pipeline, lineage, understanding)
 ```
 
 ---
 
-## 🎯 The Sacred Demo Scenario
-The platform is built to validate a single, high-fidelity demo pipeline:
-1. **Inputs:** Artist uploads voice notes, raw lyrics, and a release goal.
-2. **Aggregations:** The **Context Assembly Engine** combines these with the active **Creator Profile** (writing styles, goals) and retrieves relevant historical vectors.
-3. **Execution:** The **Orchestrator Agent** assigns tasks to routing blocks.
-4. **Outputs:** A structured release strategy, content calendar, reference citations, Vibra state tracking visual, and a system `confidence_score`.
+## Features
+
+- **Conversational ideation** — Guided creative conversation that follows emotion before format
+- **Emotional insight generation** — Pattern-based discovery of a project's emotional core
+- **Artifact production** — Generates structured production-ready deliverables
+- **Artifact lineage** — Tracks how each artifact derives from the conversation
+- **Workspace visualization** — Live dashboard showing pipeline, lineage, and understanding state
+- **Swappable Production Engine** — Generation backend can be replaced without touching conversation, memory, or reasoning
+- **AMD-ready inference interface** — Abstract `ProductionEngine` class ready for cloud GPU inference
+- **Deterministic fallback** — TemplateEngine works without any LLM or GPU, enabling offline development and testing
 
 ---
 
-## ⚡ AMD Hardware Strategy
-* **Local Ryzen AI NPU Offloading:** Local notes summarization and vector indexing are handled locally on-device, preserving privacy and saving cloud API costs.
-* **Cloud Instinct GPU Prefill/Decode:** Large planning routines are run on AMD Instinct Cloud GPUs using vLLM/SGLang with a disaggregated prefill/decode pipeline architecture to reduce token generation overhead by 10x-30x.
+## AMD Production Engine
+
+The Production Engine interface (`core/production.py`) defines:
+
+- `Artifact` — structured output dataclass
+- `ProductionEngine` — abstract base class with a single `generate()` method
+
+The current implementation is `TemplateEngine` — a deterministic builder that produces the Film Concept artifact without any LLM inference.
+
+For the hackathon, `AMDEngine` is the target runtime implementation. It will use AMD Cloud inference to produce richer, more varied artifacts. The architecture ensures zero changes to conversation, reasoning, memory, or artifact lineage when the engine is swapped.
+
+```
+Today                              Hackathon
+
+Conversation                       Conversation
+     │                                   │
+Reasoning                          Reasoning
+     │                                   │
+TemplateEngine                     AMDEngine
+     │                                   │
+ Artifact                          Artifact
+```
+
+Engine selection is environment-driven: `PRODUCTION_ENGINE=amd` (default: `template`).
 
 ---
 
-## 🧪 Quick Start & Verification
-To verify the environment, make sure Python 3.12 is active and run:
+## Quick Start
+
+**Requirements:** Python 3.12+
+
 ```bash
-# Setup virtual environment and dependencies
-.venv\Scripts\pip install -r requirements-foundation.txt
-.venv\Scripts\pip install -r requirements-dev.txt
+# Install dependencies
+pip install -r requirements-foundation.txt
 
-# Run verification test suites
-.venv\Scripts\python -m pytest
+# Copy environment config and add your API keys
+cp .env.example .env
+
+# Start the server
+uvicorn main:app --reload
 ```
-All system milestones and design specifications are logged in `docs/` and tracked in our task files.
+
+Open [localhost:8000](http://localhost:8000).
+
+That's it. The deterministic demo works without any LLM or GPU.
 
 ---
 
-## 📐 Design Principles
+## Testing
 
-The architecture is guided by ten design principles codified in `docs/PRINCIPLES.md`, including: Context before Generation, Artifacts over Conversations, Memory before Repetition, Deterministic before Autonomous, Human Approval before Execution, and Domains Extend / Kernel Stable.
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
 
-## 🔭 Future Horizon: CreatorOS Production Engine
+All 77 tests pass.
 
-The architecture documented here extends beyond text artifacts to full multimedia production — and beyond film to any creative domain. The `docs/CREATOROS_PRODUCTION_ENGINE_VISION.md` document defines the long-term architecture: a Production Kernel, Production Intelligence Engine (PIE), Creative Asset Graph (CAG), Evaluation Layer, and pluggable Domain Packs for music, film, games, podcasts, animation, publishing, and education.
+---
 
-See also ADRs 004–007 in `docs/ARCHITECTURE_DECISIONS.md` for the architectural rationale behind the Production Kernel, Artifact Graph, Evaluation Layer, and Domain Packs.
+## Design Principles
 
-**Current sprint focus:** Music artist release plan MVP. The production engine vision is a post-hackathon expansion path.
+- **Conversation before generation** — Understanding precedes artifact production
+- **Deterministic reasoning** — Insight patterns are explicit and auditable
+- **Swappable production engines** — Generation is a pluggable interface, not a hard dependency
+- **Observable state** — Every layer (observer, reasoning, understanding) is inspectable at runtime
+- **Artifact lineage** — Every output traces back to the conversation and reasoning that produced it
+- **Human approval before production** — Artifacts are proposed, reviewed, and approved before generation
