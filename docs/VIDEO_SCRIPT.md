@@ -36,15 +36,7 @@
 
 *(switch to architecture slide — Slide 5)*
 
-> CreatorOS follows a different pipeline.
->
-> Instead of generating immediately, it first listens, observes, reasons, and builds an understanding of the creator's intent.
->
-> Only after that understanding is established does it produce.
->
-> Architecturally: **Console → Conversation → Observer → Reasoning → Understanding → Production Engine → Workspace.**
->
-> Understanding is a first-class architectural layer, not an afterthought.
+> CreatorOS is built around a simple principle: conversation comes before generation. The system observes the conversation, reasons about the creator's intent, builds an understanding, and only then passes that understanding to the Production Engine. That understanding becomes a production-ready artifact, which is preserved in the workspace with its lineage.
 
 ## 1:40 — Live Demo
 
