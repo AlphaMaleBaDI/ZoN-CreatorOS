@@ -147,14 +147,17 @@
   .feature-list li { margin-bottom: 0.5rem; }
 
   @media print {
-    body { background: white; padding: 0; }
+    @page { size: A4 landscape; margin: 0; }
+    body { background: #0a0a0f; padding: 0; }
     .slide {
       border: none;
       border-radius: 0;
       margin: 0;
       page-break-after: always;
       aspect-ratio: auto;
-      min-height: 720px;
+      height: 100vh;
+      min-height: 0;
+      padding: 2rem 3rem;
     }
     .slide-number { display: none; }
   }
@@ -189,6 +192,10 @@
 <div class="slide">
   <h2>PROBLEM</h2>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <p style="font-size:1.4rem; font-weight:700; color:var(--cyan); margin-bottom:1.5rem; text-align:center;">
+      Today's AI generates.<br>
+      <span style="color:var(--gold);">CreatorOS understands first.</span>
+    </p>
     <ul class="feature-list">
       <li>Creators don't lack ideas — they lack systems that hold them.</li>
       <li style="margin-top:0.75rem;">Every AI conversation starts from zero. Context is lost.</li>
@@ -238,10 +245,44 @@ Lineage → Workspace</div>
       Every layer is observable. Every output traces back to conversation.
     </p>
   </div>
-  <div class="slide-number">3 / 10</div>
+  <div class="slide-number">3 / 11</div>
 </div>
 
-<!-- SLIDE 4 – Architecture -->
+<!-- SLIDE 4 – Lifecycle -->
+<div class="slide">
+  <h2>CREATOR LIFECYCLE</h2>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <div class="diagram" style="font-size:0.95rem; text-align:center; width:100%;">
+Idea
+ │
+ ▼
+<span style="color:var(--cyan);">Conversation</span>
+ │
+ ▼
+<span style="color:var(--cyan);">Insight</span>
+ │
+ ▼
+<span style="color:var(--cyan);">Understanding</span>
+ │
+ ▼
+<span style="color:var(--gold);">AMD Fireworks</span>
+ │
+ ▼
+<span style="color:var(--cyan);">Artifact</span>
+ │
+ ▼
+<span style="color:var(--cyan);">Workspace</span>
+ │
+ ▼
+<span style="color:var(--dim);">Next Artifact →</span></div>
+    <p style="margin-top:1.5rem; color:var(--dim); font-size:0.85rem;">
+      From raw idea to production artifact — without losing context.
+    </p>
+  </div>
+  <div class="slide-number">4 / 11</div>
+</div>
+
+<!-- SLIDE 5 – Architecture -->
 <div class="slide">
   <h2>ARCHITECTURE</h2>
   <div class="grid-2" style="flex:1; align-content:center;">
@@ -268,10 +309,10 @@ Lineage → Workspace</div>
       </ul>
     </div>
   </div>
-  <div class="slide-number">4 / 10</div>
+  <div class="slide-number">5 / 11</div>
 </div>
 
-<!-- SLIDE 5 – AMD Integration -->
+<!-- SLIDE 6 – AMD Integration -->
 <div class="slide">
   <h2>AMD INTEGRATION</h2>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
@@ -307,10 +348,10 @@ TemplateEngine           <span style="color:var(--gold)">AMDEngine</span>
       </div>
     </div>
   </div>
-  <div class="slide-number">5 / 10</div>
+  <div class="slide-number">6 / 11</div>
 </div>
 
-<!-- SLIDE 6 – Demo -->
+<!-- SLIDE 7 – Demo -->
 <div class="slide">
   <h2>LIVE DEMO</h2>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
@@ -327,29 +368,29 @@ TemplateEngine           <span style="color:var(--gold)">AMDEngine</span>
 <span style="color:var(--cyan);">[ you ]</span>   Yes, go ahead.
 <span style="color:var(--gold);">[ boot ]</span>  <span style="color:var(--cyan);">[ generates Film Concept via AMD Fireworks ]</span></div>
   </div>
-  <div class="slide-number">6 / 10</div>
+  <div class="slide-number">7 / 11</div>
 </div>
 
-<!-- SLIDE 7 – Results -->
+<!-- SLIDE 8 – Results -->
 <div class="slide">
   <h2>RESULTS</h2>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
     <div class="grid-2">
+      <div class="stat">
+        <div class="num">~10s</div>
+        <div class="label">AMD artifact generation (deepseek-v4-flash)</div>
+      </div>
       <div class="stat">
         <div class="num">77</div>
         <div class="label">passing tests</div>
       </div>
       <div class="stat">
         <div class="num">2</div>
-        <div class="label">production engines (Template + AMD)</div>
+        <div class="label">interchangeable production engines</div>
       </div>
       <div class="stat">
-        <div class="num">~10s</div>
-        <div class="label">AMD artifact generation</div>
-      </div>
-      <div class="stat">
-        <div class="num">100%</div>
-        <div class="label">architecture unchanged during AMD swap</div>
+        <div class="num">0</div>
+        <div class="label">architecture changes during AMD swap</div>
       </div>
     </div>
     <div style="margin-top:1.5rem; padding:1rem 1.5rem; background:var(--surface); border-left:3px solid var(--cyan); border-radius:4px;">
@@ -359,10 +400,10 @@ TemplateEngine           <span style="color:var(--gold)">AMDEngine</span>
       </p>
     </div>
   </div>
-  <div class="slide-number">7 / 10</div>
+  <div class="slide-number">8 / 11</div>
 </div>
 
-<!-- SLIDE 8 – Why It Matters -->
+<!-- SLIDE 9 – Why It Matters -->
 <div class="slide">
   <h2>WHY IT MATTERS</h2>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
@@ -405,10 +446,10 @@ Rich Artifact</div>
       That's the difference between an API call and an operating system.
     </p>
   </div>
-  <div class="slide-number">8 / 10</div>
+  <div class="slide-number">9 / 11</div>
 </div>
 
-<!-- SLIDE 9 – Roadmap -->
+<!-- SLIDE 10 – Roadmap -->
 <div class="slide">
   <h2>ROADMAP</h2>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
@@ -426,10 +467,10 @@ Rich Artifact</div>
       </ul>
     </div>
   </div>
-  <div class="slide-number">9 / 10</div>
+  <div class="slide-number">10 / 11</div>
 </div>
 
-<!-- SLIDE 10 – Thank You -->
+<!-- SLIDE 11 – Thank You -->
 <div class="slide" style="justify-content:center; align-items:center; text-align:center;">
   <p class="boot-line"><span>creatoros</span> shutdown sequence</p>
   <p class="boot-line boot-ok">[ OK ] Artifacts preserved</p>
@@ -439,6 +480,10 @@ Rich Artifact</div>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
     <h1 style="font-size:2.5rem; margin-bottom:1rem;">CREATOROS</h1>
     <p style="color:var(--gold); margin-bottom:2rem;">AI Operating System for Creators</p>
+    <p style="color:var(--dim); font-size:0.9rem; margin-bottom:2rem; max-width:600px;">
+      Conversation becomes understanding.<br>
+      Understanding becomes production.
+    </p>
     <p style="margin-bottom:0.5rem;">
       <a href="https://github.com/AlphaMaleBaDI/ZoN-CreatorOS" style="color:var(--cyan); text-decoration:none;">
         github.com/AlphaMaleBaDI/ZoN-CreatorOS
@@ -449,7 +494,7 @@ Rich Artifact</div>
       Built with AMD Fireworks · FastAPI · Alpine.js
     </p>
   </div>
-  <div class="slide-number">10 / 10</div>
+  <div class="slide-number">11 / 11</div>
 </div>
 
 </div>
@@ -468,7 +513,7 @@ Rich Artifact</div>
   <div style="margin-bottom:1.5rem;">
     <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 2 — PROBLEM (30 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
-      "Creators don't suffer from a lack of ideas. They suffer from fragmented tools, context loss, and AI that starts every conversation from zero."
+      "Today's AI generates. CreatorOS understands first. Creators don't suffer from a lack of ideas — they suffer from tools that lose context and start every conversation from zero."
     </p>
   </div>
 
@@ -480,51 +525,58 @@ Rich Artifact</div>
   </div>
 
   <div style="margin-bottom:1.5rem;">
-    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 4 — ARCHITECTURE (20 sec)</p>
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 4 — CREATOR LIFECYCLE (20 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "This is the CreatorOS lifecycle. From raw idea to production artifact without losing context. The insight on Turn 3 is the moment the system understands — and that understanding flows into AMD Fireworks for production."
+    </p>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 5 — ARCHITECTURE (20 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
       "Six layers. Each has a single responsibility. The key property: conversation before generation, and production engines are pluggable."
     </p>
   </div>
 
   <div style="margin-bottom:1.5rem;">
-    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 5 — AMD INTEGRATION (45 sec)</p>
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 6 — AMD INTEGRATION (45 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
       "This is our strongest slide. The Production Engine interface has two implementations: TemplateEngine (deterministic, always works) and AMDEngine (uses AMD Fireworks via the OpenAI-compatible API). Swapping between them is one environment variable. Zero architecture changes. Automatic fallback if AMD is unavailable. 9.9 second generation latency with deepseek-v4-flash."
     </p>
   </div>
 
   <div style="margin-bottom:1.5rem;">
-    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 6 — DEMO (60 sec)</p>
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 7 — DEMO (60 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
       "Walk through the 5-turn conversation. The key moment is Turn 3: 'I think it might be about loneliness — or belonging.' That's the insight. The system has earned the right to infer. Turn 5 generates via AMD Fireworks."
     </p>
   </div>
 
   <div style="margin-bottom:1.5rem;">
-    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 7 — RESULTS (20 sec)</p>
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 8 — RESULTS (20 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
-      "77 tests pass. Two production engines. ~10 second generation. Zero architecture changes during AMD swap."
+      "~10 second AMD generation. 77 passing tests. Two interchangeable production engines. Zero architecture changes during the AMD swap."
     </p>
   </div>
 
   <div style="margin-bottom:1.5rem;">
-    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 8 — WHY IT MATTERS (30 sec)</p>
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 9 — WHY IT MATTERS (30 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
       "Before: conversation directly to a template engine. After: conversation → reasoning → understanding → swappable production engine. The architecture doesn't change when the engine changes. That's the difference between an API call and an operating system."
     </p>
   </div>
 
   <div style="margin-bottom:1.5rem;">
-    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 9 — ROADMAP (15 sec)</p>
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 10 — ROADMAP (15 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
       "Today: Film Concept on AMD Fireworks. Next: campaigns, launch plans, storyboards. Future: music, games, education — powered by AMD Instinct inference and local Ryzen AI NPU."
     </p>
   </div>
 
   <div style="margin-bottom:0;">
-    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 10 — CLOSE (15 sec)</p>
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 11 — CLOSE (15 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
-      "CreatorOS. An AI operating system for creators. Thank you."
+      "Conversation becomes understanding. Understanding becomes production. CreatorOS. Thank you."
     </p>
   </div>
 </div>
