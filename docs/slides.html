@@ -265,7 +265,7 @@ Idea
 <span style="color:var(--cyan);">Understanding</span>
  │
  ▼
-<span style="color:var(--gold);">AMD Fireworks</span>
+<span style="color:var(--gold);">Production Engine</span>
  │
  ▼
 <span style="color:var(--cyan);">Artifact</span>
@@ -285,60 +285,66 @@ Idea
 <!-- SLIDE 5 – Architecture -->
 <div class="slide">
   <h2>ARCHITECTURE</h2>
-  <div class="grid-2" style="flex:1; align-content:center;">
-    <div>
-      <h3>Layers</h3>
-      <ul class="feature-list">
-        <li><span style="color:var(--cyan);">Console</span> — Alpine.js terminal UI</li>
-        <li><span style="color:var(--cyan);">API</span> — FastAPI + WebSocket routes</li>
-        <li><span style="color:var(--cyan);">Observer</span> — State + belief extraction</li>
-        <li><span style="color:var(--cyan);">Reasoning</span> — Insight engine</li>
-        <li><span style="color:var(--cyan);">Production</span> — Swappable engine interface</li>
-        <li><span style="color:var(--cyan);">Workspace</span> — Dashboard + lineage</li>
-      </ul>
-    </div>
-    <div>
-      <h3>Key Properties</h3>
-      <ul class="feature-list">
-        <li>Conversation before generation</li>
-        <li>Deterministic reasoning</li>
-        <li>Pluggable production engines</li>
-        <li>Observable runtime state</li>
-        <li>Artifact lineage tracking</li>
-        <li>Human approval before production</li>
-      </ul>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <p style="color:var(--dim); font-size:0.85rem; margin-bottom:1.5rem; text-align:center;">
+      Every artifact is generated only after understanding is built.
+    </p>
+    <div class="grid-2" style="flex:1; align-content:center;">
+      <div>
+        <div class="diagram" style="font-size:0.85rem; line-height:1.6;">
+Console
+   │
+   ▼
+Conversation
+   │
+   ▼
+Observer
+   │
+   ▼
+Reasoning
+   │
+   ▼
+Understanding
+   │
+   ▼
+Production Engine
+   │
+   ▼
+Workspace</div>
+      </div>
+      <div>
+        <h3>Key Properties</h3>
+        <ul class="feature-list">
+          <li>Context First</li>
+          <li>Modular</li>
+          <li>Swappable Production</li>
+          <li>Domain Independent</li>
+          <li>Observable</li>
+          <li>Testable</li>
+        </ul>
+      </div>
     </div>
   </div>
   <div class="slide-number">5 / 11</div>
 </div>
 
-<!-- SLIDE 6 – AMD Integration -->
+<!-- SLIDE 6 – AMD-Powered Production -->
 <div class="slide">
-  <h2>AMD INTEGRATION</h2>
+  <h2>AMD-POWERED PRODUCTION</h2>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
     <div class="diagram">
+Understanding
+      │
+      ▼
 Production Engine
-     │
- ┌────┴────────────────────┐
- │                        │
-TemplateEngine           <span style="color:var(--gold)">AMDEngine</span>
- (deterministic)          │
-                          │
-                    Fireworks API
-                    (OpenAI-compatible)
-                          │
-                      deepseek-v4-flash
-                           │
-                      Artifact
-                           │
-                           ▼
-                      Lineage
-                           │
-                           ▼
-                     Workspace
-                           │
-                     <span style="color:var(--dim)">↓ fallback on failure</span>
-                     TemplateEngine</div>
+      │
+ ┌────┴────┐
+ │Template │  AMD
+ │ Engine  │  Fireworks
+ └─────────┘
+      │
+      ▼
+ Artifact</div>
     <div style="margin-top:1.5rem; display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
       <div class="stat">
         <div class="num">1</div>
@@ -383,8 +389,8 @@ TemplateEngine           <span style="color:var(--gold)">AMDEngine</span>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
     <div class="grid-2">
       <div class="stat">
-        <div class="num">~10s</div>
-        <div class="label">AMD artifact generation (deepseek-v4-flash)</div>
+        <div class="num">9.9s</div>
+        <div class="label">AMD Fireworks generation</div>
       </div>
       <div class="stat">
         <div class="num">77</div>
@@ -402,7 +408,7 @@ TemplateEngine           <span style="color:var(--gold)">AMDEngine</span>
     <div style="margin-top:1.5rem; padding:1rem 1.5rem; background:var(--surface); border-left:3px solid var(--cyan); border-radius:4px;">
       <p style="font-size:0.9rem;">
         <span style="color:var(--gold);">Template:</span> Deterministic, 0s latency, structured schema<br>
-        <span style="color:var(--cyan);">AMD Fireworks:</span> AI-generated, ~10s latency, creative expansion
+        <span style="color:var(--cyan);">AMD Fireworks:</span> AI-generated, 9.9s latency, creative expansion
       </p>
     </div>
   </div>
@@ -420,10 +426,10 @@ TemplateEngine           <span style="color:var(--gold)">AMDEngine</span>
 Conversation
      │
      ▼
-Template Engine
+  Generate
      │
      ▼
-Static Artifact</div>
+  Output</div>
       </div>
       <div>
         <h3>After</h3>
@@ -431,23 +437,13 @@ Static Artifact</div>
 Conversation
      │
      ▼
-Reasoning
-     │
-     ▼
 Understanding
      │
      ▼
 Production Engine
      │
- ┌───┴───┐
- │  AMD  │
- └───────┘
-     │
      ▼
- Artifact
-     │
-     ▼
-Lineage → Workspace</div>
+ Artifact</div>
       </div>
     </div>
     <p style="margin-top:1.5rem; font-size:0.9rem; color:var(--dim);">
@@ -529,28 +525,28 @@ Lineage → Workspace</div>
   <div style="margin-bottom:1.5rem;">
     <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 3 — HOW IT WORKS (30 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
-      "Walk through the flow: Conversation → Observer → Reasoning → Understanding → Production Engine → Artifact → Workspace. Highlight that each layer is observable and every artifact traces back to conversation."
+      "Walk through the flow: Conversation → Observer → Reasoning → Understanding → Production Engine → Artifact → Lineage → Workspace. Highlight that each layer is observable and every artifact traces back to conversation."
     </p>
   </div>
 
   <div style="margin-bottom:1.5rem;">
     <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 4 — CREATOR LIFECYCLE (20 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
-      "This is the CreatorOS lifecycle. From raw idea to production artifact without losing context. The insight on Turn 3 is the moment the system understands — and that understanding flows into AMD Fireworks for production."
+      "This is the CreatorOS lifecycle. From raw idea to production artifact without losing context. The insight on Turn 3 is the moment the system understands — and that understanding flows into Production Engine for generation."
     </p>
   </div>
 
   <div style="margin-bottom:1.5rem;">
     <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 5 — ARCHITECTURE (20 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
-      "Six layers. Each has a single responsibility. The key property: conversation before generation, and production engines are pluggable."
+      "Seven-layer pipeline: Console → Conversation → Observer → Reasoning → Understanding → Production Engine → Workspace. Each layer has a single responsibility. The core idea: understanding is a first-class layer, not an afterthought."
     </p>
   </div>
 
   <div style="margin-bottom:1.5rem;">
-    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 6 — AMD INTEGRATION (45 sec)</p>
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 6 — AMD-POWERED PRODUCTION (45 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
-      "This is our strongest slide. The Production Engine interface has two implementations: TemplateEngine (deterministic, always works) and AMDEngine (uses AMD Fireworks via the OpenAI-compatible API). Swapping between them is one environment variable. Zero architecture changes. Automatic fallback if AMD is unavailable. 9.9 second generation latency with deepseek-v4-flash."
+      "The Production Engine has two implementations: Template Engine (deterministic, always works) and AMD Fireworks (AI-powered via OpenAI-compatible API). Swapping between them is one environment variable. Zero architecture changes. Automatic fallback if AMD is unavailable. 9.9 second generation latency."
     </p>
   </div>
 
@@ -564,14 +560,14 @@ Lineage → Workspace</div>
   <div style="margin-bottom:1.5rem;">
     <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 8 — RESULTS (20 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
-      "~10 second AMD generation. 77 passing tests. Two interchangeable production engines. Zero architecture changes during the AMD swap."
+      "9.9 second AMD generation. 77 passing tests. Two interchangeable production engines. Zero architecture changes during the AMD swap."
     </p>
   </div>
 
   <div style="margin-bottom:1.5rem;">
     <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 9 — WHY IT MATTERS (30 sec)</p>
     <p style="color:var(--dim); font-size:0.85rem;">
-      "Before: conversation directly to a template engine. After: conversation → reasoning → understanding → swappable production engine. The architecture doesn't change when the engine changes. That's the difference between an API call and an operating system."
+      "Before: conversation directly to generate and output. After: conversation → understanding → production engine → artifact. The difference isn't the engine — it's the understanding layer. That's the innovation."
     </p>
   </div>
 
