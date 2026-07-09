@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: creatoros
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements-foundation.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: PRODUCTION_ENGINE
+        value: amd
+      - key: FIREWORKS_MODEL
+        value: accounts/fireworks/models/deepseek-v4-flash
+      - key: FIREWORKS_BASE_URL
+        value: https://api.fireworks.ai/inference/v1
+      - key: FIREWORKS_API_KEY
+        sync: false
+      - key: CREATOROS_INFERENCE_MODE
+        value: cloud
+      - key: WORKSPACE_STORAGE_DIR
+        value: /var/data/workspace_db
+      - key: FAISS_STORAGE_PATH
+        value: /var/data/workspace_db/vector_store
