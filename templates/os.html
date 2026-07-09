@@ -44,7 +44,7 @@
     <div class="onboarding-container">
       <div class="onboarding-messages" id="onboarding-messages">
         <template x-for="(msg, idx) in onboardingMessages" :key="idx">
-          <div class="onboarding-turn" x-bind:class="msg.role">
+          <div class="onboarding-turn" x-bind:class="msg.role" x-bind:style="'animation-delay: ' + (idx * 0.12) + 's'">
             <div class="onboarding-role" x-text="msg.role === 'system' ? 'CreatorOS' : (creatorName || 'You')"></div>
             <div class="onboarding-text" x-text="msg.text"></div>
           </div>

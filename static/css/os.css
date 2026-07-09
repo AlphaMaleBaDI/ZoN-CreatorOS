@@ -1179,6 +1179,12 @@ html, body {
   }
 }
 
+@media (max-width: 768px) {
+  .onboarding-container {
+    height: 100dvh;
+  }
+}
+
 @media (max-width: 640px) {
   #dashboard {
     padding: 10px 12px 0;
@@ -1203,11 +1209,76 @@ html, body {
     font-size: 12px;
   }
 
+  /* === Boot screen mobile === */
+  .boot-content {
+    width: 90%;
+  }
+
+  .boot-logo {
+    font-size: 48px;
+  }
+
+  .boot-tagline {
+    font-size: 11px;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .boot-step {
+    font-size: 12px;
+  }
+
+  /* === Onboarding mobile === */
+  #onboarding {
+    padding: 16px;
+    align-items: center;
+  }
+
   .onboarding-container {
-    padding: 20px 0 10px;
+    padding: 12px 0 8px;
+    height: 100dvh;
+  }
+
+  .onboarding-messages {
+    padding: 8px 0;
+  }
+
+  .onboarding-text {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .onboarding-role {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .onboarding-input-row {
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-primary);
+    padding: 12px 0;
+    z-index: 10;
+  }
+
+  .onboarding-input-row input {
+    font-size: 15px;
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .boot-logo {
+    font-size: 36px;
+    letter-spacing: 2px;
   }
 
   .onboarding-text {
     font-size: 14px;
+  }
+
+  .onboarding-input-row input {
+    font-size: 14px;
+    padding: 12px 14px;
   }
 }
