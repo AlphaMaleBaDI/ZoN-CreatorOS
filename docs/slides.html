@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CreatorOS — AMD Developer Hackathon Act II</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --cyan: #00d4d4;
+    --gold: #d4a030;
+    --text: #c8c8d0;
+    --dim: #606070;
+    --font: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+    --slide-w: 1280px;
+    --slide-h: 720px;
+  }
+
+  body {
+    background: #050508;
+    font-family: var(--font);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+  }
+
+  .slide-container {
+    max-width: var(--slide-w);
+    width: 100%;
+  }
+
+  .slide {
+    background: var(--bg);
+    border: 1px solid #1a1a28;
+    border-radius: 8px;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 3rem 4rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--gold));
+    opacity: 0.6;
+  }
+
+  .slide-number {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 2rem;
+    font-size: 0.75rem;
+    color: var(--dim);
+  }
+
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--cyan);
+    margin-bottom: 0.5rem;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  p, li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  ul { list-style: none; padding: 0; }
+  li::before { content: '> '; color: var(--cyan); }
+
+  .boot-line {
+    color: var(--dim);
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+  }
+  .boot-line span { color: var(--cyan); }
+  .boot-ok { color: #40c040; }
+
+  .diagram {
+    font-family: var(--font);
+    font-size: 0.9rem;
+    line-height: 1.8;
+    white-space: pre;
+    color: var(--text);
+    background: var(--surface);
+    padding: 1.5rem 2rem;
+    border-radius: 6px;
+    border-left: 3px solid var(--cyan);
+  }
+
+  .diagram .arrow { color: var(--cyan); }
+  .diagram .branch { color: var(--gold); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .stat {
+    background: var(--surface);
+    padding: 1.25rem;
+    border-radius: 6px;
+    border: 1px solid #1a1a28;
+  }
+  .stat .num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cyan);
+  }
+  .stat .label {
+    font-size: 0.8rem;
+    color: var(--dim);
+    margin-top: 0.25rem;
+  }
+
+  .feature-list li { margin-bottom: 0.5rem; }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .slide {
+      border: none;
+      border-radius: 0;
+      margin: 0;
+      page-break-after: always;
+      aspect-ratio: auto;
+      min-height: 720px;
+    }
+    .slide-number { display: none; }
+  }
+
+  @media (max-width: 768px) {
+    .slide { padding: 1.5rem; }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.2rem; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="slide-container">
+
+<!-- SLIDE 1 – Title -->
+<div class="slide">
+  <p class="boot-line"><span>creatoros</span> v0.10 — boot sequence</p>
+  <p class="boot-line boot-ok">[ OK ] Production Engine: AMD Fireworks</p>
+  <p class="boot-line boot-ok">[ OK ] Memory: initialized</p>
+  <p class="boot-line boot-ok">[ OK ] Workspace: ready</p>
+  <p class="boot-line boot-ok">[ OK ] All 77 tests passed</p>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+    <h1 style="font-size:3.5rem; margin-bottom:0.25rem;">CREATOROS</h1>
+    <p style="color:var(--gold); font-size:1.3rem; margin-bottom:1.5rem;">An AI Operating System for Creators</p>
+    <p style="color:var(--dim); font-size:0.85rem;">AMD Developer Hackathon — Act II · Unicorn Track</p>
+  </div>
+  <div class="slide-number">1 / 10</div>
+</div>
+
+<!-- SLIDE 2 – Problem -->
+<div class="slide">
+  <h2>PROBLEM</h2>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <ul class="feature-list">
+      <li>Creators don't lack ideas — they lack systems that hold them.</li>
+      <li style="margin-top:0.75rem;">Every AI conversation starts from zero. Context is lost.</li>
+      <li style="margin-top:0.75rem;">Tools are fragmented: chat, planning, documents, production.</li>
+      <li style="margin-top:0.75rem;">Most AI creative tools generate before they understand.</li>
+    </ul>
+    <div style="margin-top:2rem; padding:1rem 1.5rem; background:var(--surface); border-left:3px solid var(--gold); border-radius:4px;">
+      <p style="color:var(--dim); font-style:italic;">
+        "Most AI remembers what you said.<br>
+        CreatorOS understands what you're trying to create."
+      </p>
+    </div>
+  </div>
+  <div class="slide-number">2 / 10</div>
+</div>
+
+<!-- SLIDE 3 – Solution Flow -->
+<div class="slide">
+  <h2>HOW IT WORKS</h2>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <div class="diagram">
+Conversation  &lt;Console → FastAPI&gt;
+     │
+     ▼
+Observer  &lt;Beliefs, emotional core, themes&gt;
+     │
+     ▼
+Reasoning  &lt;Insight → reflection → action&gt;
+     │
+     ▼
+Understanding  &lt;Structured creative state&gt;
+     │
+     ▼
+<span class="branch">Production Engine</span>
+     │
+ ┌────┴────┐
+ │Template │<span style="color:var(--gold)">  AMD</span>
+ │ Engine  │<span style="color:var(--gold)">  Fireworks</span>
+ └─────────┘
+     │
+     ▼
+Artifact  &lt;Structured deliverable&gt;
+     │
+     ▼
+Lineage → Workspace</div>
+    <p style="margin-top:1.5rem; color:var(--dim); font-size:0.85rem;">
+      Every layer is observable. Every output traces back to conversation.
+    </p>
+  </div>
+  <div class="slide-number">3 / 10</div>
+</div>
+
+<!-- SLIDE 4 – Architecture -->
+<div class="slide">
+  <h2>ARCHITECTURE</h2>
+  <div class="grid-2" style="flex:1; align-content:center;">
+    <div>
+      <h3>Layers</h3>
+      <ul class="feature-list">
+        <li><span style="color:var(--cyan);">Console</span> — Alpine.js terminal UI</li>
+        <li><span style="color:var(--cyan);">API</span> — FastAPI + WebSocket routes</li>
+        <li><span style="color:var(--cyan);">Observer</span> — State + belief extraction</li>
+        <li><span style="color:var(--cyan);">Reasoning</span> — Insight engine</li>
+        <li><span style="color:var(--cyan);">Production</span> — Swappable engine interface</li>
+        <li><span style="color:var(--cyan);">Workspace</span> — Dashboard + lineage</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Key Properties</h3>
+      <ul class="feature-list">
+        <li>Conversation before generation</li>
+        <li>Deterministic reasoning</li>
+        <li>Pluggable production engines</li>
+        <li>Observable runtime state</li>
+        <li>Artifact lineage tracking</li>
+        <li>Human approval before production</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-number">4 / 10</div>
+</div>
+
+<!-- SLIDE 5 – AMD Integration -->
+<div class="slide">
+  <h2>AMD INTEGRATION</h2>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div class="diagram">
+Production Engine
+     │
+ ┌────┴────────────────────┐
+ │                        │
+TemplateEngine           <span style="color:var(--gold)">AMDEngine</span>
+ (deterministic)          │
+                          │
+                    Fireworks API
+                    (OpenAI-compatible)
+                          │
+                     deepseek-v4-flash
+                          │
+                     Artifact
+                          │
+                    <span style="color:var(--dim)">↓ fallback on failure</span>
+                    TemplateEngine</div>
+    <div style="margin-top:1.5rem; display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem;">
+      <div class="stat">
+        <div class="num">1</div>
+        <div class="label">env var to swap engine</div>
+      </div>
+      <div class="stat">
+        <div class="num">0</div>
+        <div class="label">architecture changes required</div>
+      </div>
+      <div class="stat">
+        <div class="num">9.9s</div>
+        <div class="label">AMD generation latency</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-number">5 / 10</div>
+</div>
+
+<!-- SLIDE 6 – Demo -->
+<div class="slide">
+  <h2>LIVE DEMO</h2>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div class="diagram" style="font-size:0.85rem;">
+<span style="color:var(--gold);">[ boot ]</span>  Welcome. What are you creating?
+<span style="color:var(--cyan);">[ you ]</span>   I want to make an AI film about hope.
+<span style="color:var(--gold);">[ boot ]</span>  What feeling do you want your audience to leave with?
+<span style="color:var(--cyan);">[ you ]</span>   Hope.
+<span style="color:var(--gold);">[ boot ]</span>  What kind of hope is this?
+<span style="color:var(--cyan);">[ you ]</span>   An AI learns what it means to hope.
+<span style="color:var(--gold);">[ boot ]</span>  <span style="color:var(--cyan);">I think it might be about loneliness — or belonging.</span>
+<span style="color:var(--cyan);">[ you ]</span>   Yes, that's exactly it.
+<span style="color:var(--gold);">[ boot ]</span>  Shall I develop this into a full concept?
+<span style="color:var(--cyan);">[ you ]</span>   Yes, go ahead.
+<span style="color:var(--gold);">[ boot ]</span>  <span style="color:var(--cyan);">[ generates Film Concept via AMD Fireworks ]</span></div>
+  </div>
+  <div class="slide-number">6 / 10</div>
+</div>
+
+<!-- SLIDE 7 – Results -->
+<div class="slide">
+  <h2>RESULTS</h2>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div class="grid-2">
+      <div class="stat">
+        <div class="num">77</div>
+        <div class="label">passing tests</div>
+      </div>
+      <div class="stat">
+        <div class="num">2</div>
+        <div class="label">production engines (Template + AMD)</div>
+      </div>
+      <div class="stat">
+        <div class="num">~10s</div>
+        <div class="label">AMD artifact generation</div>
+      </div>
+      <div class="stat">
+        <div class="num">100%</div>
+        <div class="label">architecture unchanged during AMD swap</div>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem; padding:1rem 1.5rem; background:var(--surface); border-left:3px solid var(--cyan); border-radius:4px;">
+      <p style="font-size:0.9rem;">
+        <span style="color:var(--gold);">Template:</span> Deterministic, 0s latency, structured schema<br>
+        <span style="color:var(--cyan);">AMD Fireworks:</span> AI-generated, ~10s latency, creative expansion
+      </p>
+    </div>
+  </div>
+  <div class="slide-number">7 / 10</div>
+</div>
+
+<!-- SLIDE 8 – Why It Matters -->
+<div class="slide">
+  <h2>WHY IT MATTERS</h2>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div class="grid-2">
+      <div>
+        <h3>Before</h3>
+        <div class="diagram" style="font-size:0.8rem;">
+Conversation
+     │
+     ▼
+Template Engine
+     │
+     ▼
+Static Artifact</div>
+      </div>
+      <div>
+        <h3>After</h3>
+        <div class="diagram" style="font-size:0.8rem;">
+Conversation
+     │
+     ▼
+Reasoning
+     │
+     ▼
+Understanding
+     │
+     ▼
+Production Engine
+     │
+ ┌───┴───┐
+ │  AMD  │
+ └───────┘
+     │
+     ▼
+Rich Artifact</div>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem; font-size:0.9rem; color:var(--dim);">
+      The architecture doesn't change when the engine changes.<br>
+      That's the difference between an API call and an operating system.
+    </p>
+  </div>
+  <div class="slide-number">8 / 10</div>
+</div>
+
+<!-- SLIDE 9 – Roadmap -->
+<div class="slide">
+  <h2>ROADMAP</h2>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div class="diagram" style="font-size:0.85rem;">
+<span style="color:var(--gold);">Today</span>     Film Concept · AMD Fireworks · Template fallback
+<span style="color:var(--cyan);">Next</span>      Campaigns · Launch Plans · Storyboards
+<span style="color:var(--dim);">Future</span>     Music · Games · Education · Publishing · Podcasts</div>
+    <div style="margin-top:2rem;">
+      <h3>Platform expansion</h3>
+      <ul class="feature-list">
+        <li>Domain packs for music, film, games, animation</li>
+        <li>AMD Instinct GPU inference for larger models</li>
+        <li>Local Ryzen AI NPU for private pre-processing</li>
+        <li>Multi-artifact production pipelines</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-number">9 / 10</div>
+</div>
+
+<!-- SLIDE 10 – Thank You -->
+<div class="slide" style="justify-content:center; align-items:center; text-align:center;">
+  <p class="boot-line"><span>creatoros</span> shutdown sequence</p>
+  <p class="boot-line boot-ok">[ OK ] Artifacts preserved</p>
+  <p class="boot-line boot-ok">[ OK ] Understanding persisted</p>
+  <p class="boot-line boot-ok">[ OK ] Production engine: AMD Fireworks</p>
+  <p class="boot-line boot-ok">[ OK ] System healthy</p>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <h1 style="font-size:2.5rem; margin-bottom:1rem;">CREATOROS</h1>
+    <p style="color:var(--gold); margin-bottom:2rem;">AI Operating System for Creators</p>
+    <p style="margin-bottom:0.5rem;">
+      <a href="https://github.com/AlphaMaleBaDI/ZoN-CreatorOS" style="color:var(--cyan); text-decoration:none;">
+        github.com/AlphaMaleBaDI/ZoN-CreatorOS
+      </a>
+    </p>
+    <p style="color:var(--dim); font-size:0.85rem; margin-top:1rem;">
+      AMD Developer Hackathon — Act II · Unicorn Track<br>
+      Built with AMD Fireworks · FastAPI · Alpine.js
+    </p>
+  </div>
+  <div class="slide-number">10 / 10</div>
+</div>
+
+</div>
+
+<!-- SPEAKER NOTES (not shown on screen, for presenter reference) -->
+<div style="max-width:var(--slide-w); width:100%; margin-top:3rem; padding:2rem; background:#0d0d15; border:1px solid #1a1a28; border-radius:8px;">
+  <h2 style="margin-bottom:1rem;">SPEAKER NOTES</h2>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 1 — TITLE (30 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "CreatorOS is an AI operating system for creators. Most AI creative tools start generating immediately. CreatorOS starts by understanding."
+    </p>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 2 — PROBLEM (30 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "Creators don't suffer from a lack of ideas. They suffer from fragmented tools, context loss, and AI that starts every conversation from zero."
+    </p>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 3 — HOW IT WORKS (30 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "Walk through the flow: Conversation → Observer → Reasoning → Understanding → Production Engine → Artifact → Workspace. Highlight that each layer is observable and every artifact traces back to conversation."
+    </p>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 4 — ARCHITECTURE (20 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "Six layers. Each has a single responsibility. The key property: conversation before generation, and production engines are pluggable."
+    </p>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 5 — AMD INTEGRATION (45 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "This is our strongest slide. The Production Engine interface has two implementations: TemplateEngine (deterministic, always works) and AMDEngine (uses AMD Fireworks via the OpenAI-compatible API). Swapping between them is one environment variable. Zero architecture changes. Automatic fallback if AMD is unavailable. 9.9 second generation latency with deepseek-v4-flash."
+    </p>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 6 — DEMO (60 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "Walk through the 5-turn conversation. The key moment is Turn 3: 'I think it might be about loneliness — or belonging.' That's the insight. The system has earned the right to infer. Turn 5 generates via AMD Fireworks."
+    </p>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 7 — RESULTS (20 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "77 tests pass. Two production engines. ~10 second generation. Zero architecture changes during AMD swap."
+    </p>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 8 — WHY IT MATTERS (30 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "Before: conversation directly to a template engine. After: conversation → reasoning → understanding → swappable production engine. The architecture doesn't change when the engine changes. That's the difference between an API call and an operating system."
+    </p>
+  </div>
+
+  <div style="margin-bottom:1.5rem;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 9 — ROADMAP (15 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "Today: Film Concept on AMD Fireworks. Next: campaigns, launch plans, storyboards. Future: music, games, education — powered by AMD Instinct inference and local Ryzen AI NPU."
+    </p>
+  </div>
+
+  <div style="margin-bottom:0;">
+    <p style="color:var(--cyan); font-size:0.85rem; margin-bottom:0.25rem;">SLIDE 10 — CLOSE (15 sec)</p>
+    <p style="color:var(--dim); font-size:0.85rem;">
+      "CreatorOS. An AI operating system for creators. Thank you."
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

@@ -109,10 +109,10 @@ class TestContextAssembly:
         context = engine.assemble_context(
             workspace_id=ws_id,
             user_request="Drop a new single",
-            creator_profile={"creator_name": "DoBA", "goals": ["Release music"]}
+            creator_profile={"creator_name": "OdiB\u00e0", "goals": ["Release music"]}
         )
         assert context.workspace_id == ws_id
-        assert context.creator_profile["creator_name"] == "DoBA"
+        assert context.creator_profile["creator_name"] == "OdiB\u00e0"
         assert "Release music" in context.goals
         assert context.vibra_state is not None
 
@@ -161,7 +161,7 @@ class TestOrchestratorAgent:
         context = ContextObject(
             workspace_id=uuid4(),
             user_request="Plan a release for an Afrofuturist album",
-            creator_profile={"creator_name": "DoBA", "brand_voice": "Afrofuturist"},
+            creator_profile={"creator_name": "OdiB\u00e0", "brand_voice": "Afrofuturist"},
             timestamp=time.time()
         )
         result = agent.plan_execution(context)

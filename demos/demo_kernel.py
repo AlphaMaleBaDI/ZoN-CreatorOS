@@ -42,9 +42,9 @@ def pause(sec=0.8):
     time.sleep(sec)
 
 # fix_env — ensures we have consistent seed data for the demo
-DOBA_PROFILE = {
-    "creator_name": "DoBA",
-    "brand_voice": "Afrofuturist visionary \u2014 ancestral futurism, tech-infused spirituality",
+ODIBA_PROFILE = {
+    "creator_name": "OdiBa\u00e0",
+    "brand_voice": "Afrofuturist visionary, ancestral futurism, tech-infused spirituality",
     "writing_style": "Vibrant, poetic, code-switching between Yoruba proverbs and tech jargon",
     "goals": [
         "Release 'Digital Diaspora' EP before August 2026",
@@ -127,13 +127,13 @@ def main():
     workspace = ws.create_workspace("Digital Diaspora Launch")
     project = ws.create_project(workspace.workspace_id, "Digital Diaspora EP")
     profile_svc = ProfileService()
-    profile_svc.update_creator_profile(CreatorProfile(**DOBA_PROFILE))
+    profile_svc.update_creator_profile(CreatorProfile(**ODIBA_PROFILE))
 
     dim("  Restoring Creator Identity...")
     pause(0.4)
 
     kernel = Kernel()
-    kernel.initialize(workspace_id=workspace.workspace_id, creator_name="DoBA")
+    kernel.initialize(workspace_id=workspace.workspace_id, creator_name="OdiB\u00e0")
 
     temp_ctx = kernel.context_engine.assemble_context(
         workspace_id=workspace.workspace_id,
@@ -163,13 +163,13 @@ def main():
     print(CLEAR, end="")
     print()
     dim(f"  Creator")
-    speak(f"  {BOLD}DoBA{RESET}", delay=0.02)
+    speak(f"  {BOLD}OdiBa{RESET}", delay=0.02)
     print()
     dim(f"  Workspace")
     speak(f"  {BOLD}Digital Diaspora{RESET}", delay=0.02)
     print()
     dim(f"  Goals")
-    for g in DOBA_PROFILE["goals"]:
+    for g in ODIBA_PROFILE["goals"]:
         dim(f"    > {g}")
     print()
     dim(f"  Creative State")
@@ -371,7 +371,7 @@ def main():
 
     # Kernel re-init to demonstrate persistence
     kernel2 = Kernel()
-    kernel2.initialize(workspace_id=workspace.workspace_id, creator_name="DoBA")
+    kernel2.initialize(workspace_id=workspace.workspace_id, creator_name="OdiB\u00e0")
     pause(0.15)
 
     print(f"  {DIM}Last session found.{RESET}")

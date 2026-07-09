@@ -21,7 +21,7 @@ VIBRA_MAP = {
     "hopeful": {
         "color": "#50C878",  # Emerald Green
         "name": "Verdant Dawn",
-        "description": "The first light of OdoBa'. Growth, belief, and futuristic optimism.",
+        "description": "The first light of OdiBà. Growth, belief, and futuristic optimism.",
         "keywords": {"rise", "light", "dream", "hope", "believe", "shine", "future", "new", "possible", "goal"}
     },
     "melancholy": {

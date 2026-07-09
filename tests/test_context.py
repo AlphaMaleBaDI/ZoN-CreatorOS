@@ -7,7 +7,7 @@ from memory.creator_profile import CreatorProfile
 def test_context_object_instantiation():
     ws_id = uuid4()
     profile = CreatorProfile(
-        creator_name="DoBA",
+        creator_name="OdiB\u00e0",
         brand_voice="Afrofuturist",
         writing_style="Vibrant",
         goals=[],
@@ -25,4 +25,4 @@ def test_context_object_instantiation():
     )
 
     assert context.workspace_id == ws_id
-    assert context.creator_profile["creator_name"] == "DoBA"
+    assert context.creator_profile["creator_name"] == "OdiB\u00e0"
