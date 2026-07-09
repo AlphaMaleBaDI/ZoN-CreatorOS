@@ -581,27 +581,29 @@ document.addEventListener('alpine:init', () => {
 
         // Generation progress animation with staged reveal
         if (decision.action === 'generating') {
+          await this.sleep(700);
           const stages = [
-            { working: 'Understanding intent...', done: '✓ Theme identified' },
-            { working: 'Building world...', done: '✓ Character emerging' },
-            { working: 'Designing story arc...', done: '✓ Visual language' },
-            { working: 'Creating production artifact...', done: '✓ Film Concept ready' },
+            { working: 'Synthesizing understanding...', done: '✓ Emotional core' },
+            { working: 'Building character...', done: '✓ Character' },
+            { working: 'Expanding world...', done: '✓ World' },
+            { working: 'Shaping narrative arc...', done: '✓ Narrative arc' },
+            { working: 'Generating production artifact...', done: '✓ Film Concept ready' },
           ];
           for (const s of stages) {
             this.pushLog(s.working, 'info');
-            await this.sleep(550);
+            await this.sleep(500);
             this.pushLog(s.done, 'info');
-            await this.sleep(250);
+            await this.sleep(200);
           }
-          await this.sleep(800);
+          await this.sleep(1200);
           if (decision.review) {
             this.pushLog(decision.review, 'system');
             const words = decision.review.split(/\s+/).length;
-            const readingTime = Math.max(2500, Math.min(6000, words * 180));
+            const readingTime = Math.max(3000, Math.min(8000, words * 220));
             await this.sleep(readingTime);
           }
           this.pushLog('Opening Film Concept...', 'info');
-          await this.sleep(300);
+          await this.sleep(800);
           this.artifacts.push({ artifact_type: 'film_concept', confidence: 0.85, provider: 'creator-os', artifact_id: 'fc-' + Date.now() });
           this.artifactCount = this.artifacts.length;
           this.recentlyGenerated = 'film_concept';
