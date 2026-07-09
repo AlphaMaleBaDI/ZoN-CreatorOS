@@ -20,10 +20,10 @@ That's 10 distinct layers. Each has a single responsibility. Each is testable in
 
 ## Act 1: Identity & Context (60 seconds)
 
-**What the judges see:** A creator (DoBA) arrives with a creative goal — launch a 6-track Afrofuturist EP.
+**What the judges see:** A creator (OdiBà) arrives with a creative goal — launch a 6-track Afrofuturist EP.
 
 **What CreatorOS does:**
-1. Loads DoBA's persistent profile (brand voice, personality, goals, preferred platforms)
+1. Loads OdiBà's persistent profile (brand voice, personality, goals, preferred platforms)
 2. Loads the workspace with past projects and artifacts
 3. Reads the creative state (Vibra) — *Ardent Pulse, energetic*
 4. Assembles all of this into a **ContextObject** before any AI model is invoked

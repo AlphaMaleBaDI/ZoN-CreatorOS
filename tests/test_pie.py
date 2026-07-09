@@ -15,6 +15,9 @@ class TestProductionKnowledgeGraph:
         assert "media_kit" in reachable
         assert "press_distribution" in reachable
         assert "resource_allocation" in reachable
+        assert "asset_checklist" in reachable
+        assert "publishing_checklist" in reachable
+        assert "release_complete" in reachable
 
     def test_reachable_from_leaf(self):
         reachable = _reachable_types("content_script", PRODUCTION_KNOWLEDGE_GRAPH)
@@ -45,7 +48,7 @@ class TestProductionIntelligenceEngine:
         assert "campaign_plan" in assessment.completed
         assert "content_calendar" in assessment.completed
         assert "press_release" in assessment.missing
-        assert assessment.production_progress >= 0.3
+        assert assessment.production_progress >= 0.2
 
     def test_fully_complete(self):
         pie = ProductionIntelligenceEngine()

@@ -5,7 +5,7 @@ from uuid import UUID
 
 from core.schemas import ContextObject, PIEAssessment, PipelineMetrics
 from core.context_assembly import ContextAssemblyEngine
-from core.orchestration import Orchestrator
+from core.orchestration import Orchestrator, _resolve
 from core.pie import ProductionIntelligenceEngine
 from core.eval import EvaluationEngine
 from services.workspace_service import WorkspaceService
@@ -117,29 +117,33 @@ class Kernel:
         logger.info(f"  Context assembly in {self._metrics.context_assembly_ms}ms.")
         return ctx
 
-    def execute(self, context: ContextObject, intent: str = "") -> Any:
+    def execute(self, context: ContextObject, artifact_type: str = "launch_plan") -> Any:
         if not self.initialized:
             raise RuntimeError(
                 "Kernel invariant violated: "
                 "initialize() must be called before execute()."
             )
         t0 = time.perf_counter()
-        update_pipeline("orchestration", 0.2, "Running planning agent...", 0)
+        if not artifact_type:
+            artifact_type = "launch_plan"
+        agent_label = _resolve(artifact_type, "label")
+        update_pipeline("orchestration", 0.2, f"Running {agent_label} Agent...", 0)
 
-        result = self.orchestrator.run_flow(context, intent=intent)
+        result = self.orchestrator.run_flow(context, artifact_type=artifact_type)
         self._metrics.orchestration_ms = round((time.perf_counter() - t0) * 1000, 1)
         self._metrics.provider = self.orchestrator._last_provider or ""
 
         t1 = time.perf_counter()
         update_pipeline("snapshot", 0.4, "Recording snapshot...", int((t1 - t0) * 1000))
+        last_type = self.orchestrator._last_artifact_type or "launch_plan"
         self.snapshot_service.record(
             workspace_id=context.workspace_id,
             creator_name=self.current_profile_dict.get("creator_name"),
             project_id=context.project_id,
             artifact_id=self.orchestrator._last_artifact_id,
-            artifact_type="launch_plan",
+            artifact_type=last_type,
             provider=self.orchestrator._last_provider,
-            intent="launch_plan",
+            intent=last_type,
             confidence=getattr(result, "confidence_score", None),
         )
         self._metrics.snapshot_ms = round((time.perf_counter() - t1) * 1000, 1)
@@ -182,28 +186,22 @@ class Kernel:
             logger.info("PIE: no next artifact recommended — production complete or unknown path")
             return None
 
-        next_type = pie.recommended_next[0]
-        intent_map = {
-            "campaign_plan": "campaign",
-            "content_calendar": "content",
-            "press_release": "press",
-            "budget_plan": "budget",
-            "content_script": "content",
-            "production_schedule": "production",
-            "media_kit": "media",
-            "press_distribution": "press",
-            "resource_allocation": "resources",
-        }
-        intent = intent_map.get(next_type, "")
-
         context = self.assemble_context(
             user_request=user_request,
             project_id=project_id,
         )
-        return self.execute(context, intent=intent)
+        return self.execute(context, artifact_type=pie.recommended_next[0])
 
     def _get_existing_types(self) -> Set[str]:
         types = set()
+        if self.current_workspace:
+            artifact_ids = self.artifact_service.list_artifacts(self.current_workspace.workspace_id)
+            for aid in artifact_ids:
+                art = self.artifact_service.retrieve_artifact(aid, self.current_workspace.workspace_id)
+                if art and isinstance(art, dict):
+                    atype = art.get("artifact_type")
+                    if atype:
+                        types.add(atype)
         for art in self.recent_artifacts:
             atype = art.get("artifact_type") if isinstance(art, dict) else None
             if atype:

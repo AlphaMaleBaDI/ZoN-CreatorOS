@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 PRODUCTION_KNOWLEDGE_GRAPH: dict[str, list[str]] = {
     "launch_plan":            ["campaign_plan", "content_calendar", "press_release"],
     "campaign_plan":          ["budget_plan", "content_calendar"],
-    "content_calendar":       ["content_script", "production_schedule"],
+    "content_calendar":       ["content_script", "production_schedule", "asset_checklist", "publishing_checklist"],
     "press_release":          ["media_kit", "press_distribution"],
     "budget_plan":            ["resource_allocation"],
     "content_script":         [],
@@ -25,6 +25,9 @@ PRODUCTION_KNOWLEDGE_GRAPH: dict[str, list[str]] = {
     "media_kit":              [],
     "press_distribution":     [],
     "resource_allocation":    [],
+    "asset_checklist":        [],
+    "publishing_checklist":   ["release_complete"],
+    "release_complete":       [],
 }
 
 # -- Production State Machine (Mission 009) --------------------------------
@@ -97,6 +100,9 @@ NARRATIVE_MAP: dict[str, str] = {
     "media_kit": "Media kit assembled. Brand assets, bios, and press materials are packaged.",
     "press_distribution": "Press distribution configured. Media contacts and submission deadlines are set.",
     "resource_allocation": "Resources allocated. Team, tools, and budget assignments are finalized.",
+    "asset_checklist": "Asset checklist compiled. All required creative assets are accounted for.",
+    "publishing_checklist": "Publishing checklist ready. Distribution platforms and release logistics are confirmed.",
+    "release_complete": "Release complete. All production milestones have been delivered.",
 }
 
 

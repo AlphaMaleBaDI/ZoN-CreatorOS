@@ -184,7 +184,8 @@ class WorkspaceDashboard:
         print(f"    {bar}")
         print(f"    {BOLD}{passed}{RESET} {DIM}complete /{RESET} {total}")
         if state.can_transition:
-            print(f"    {GREEN}Ready to advance +{RESET}")
+            ready_message = f"{GREEN}Ready to advance +{RESET}"
+            print(f"    {ready_message}")
         print()
 
     def _performance_section(self, artifacts):
@@ -211,7 +212,7 @@ class WorkspaceDashboard:
         if valid:
             print(f"  {DIM}Pipeline{RESET}")
             print(f"    {DIM}Artifacts:{RESET} {BOLD}{len(valid)}{RESET}")
-            types = set(a.get("artifact_type", "unknown") for a in valid)
+            types = {a.get("artifact_type", "unknown") for a in valid}
             print(f"    {DIM}Types:{RESET} {BOLD}{len(types)}{RESET}")
             total_eval = sum(1 for a in valid if a.get("artifact_type") in ("launch_plan", "campaign_plan", "content_calendar"))
             print(f"    {DIM}Evaluations:{RESET} {BOLD}{total_eval}{RESET}")

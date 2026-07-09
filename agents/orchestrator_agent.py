@@ -15,16 +15,18 @@ class OrchestratorAgent:
         self.campaign_agent = CampaignPlanningAgent(config=config)
         self.content_agent = ContentPlanningAgent(config=config)
 
-    def plan_execution(self, context: ContextObject, intent: str = "") -> Any:
-        request_lower = context.user_request.lower()
-        if intent == "content" or any(kw in request_lower for kw in ["calendar", "content", "schedule", "post"]):
+    def plan_execution(self, context: ContextObject, artifact_type: str = "launch_plan") -> Any:
+        if artifact_type == "publishing_checklist":
+            logger.info("Routing to ContentPlanningAgent for publishing checklist")
+            return self.content_agent.generate_calendar(context)
+        if artifact_type == "release_complete":
+            logger.info("Routing to PlanningAgent for release completion")
+            return self.planning_agent.generate_roadmap(context)
+        if artifact_type == "content_calendar":
             logger.info("Routing to ContentPlanningAgent")
             return self.content_agent.generate_calendar(context)
-        if intent == "campaign" or any(kw in request_lower for kw in ["campaign", "marketing", "promotion"]):
+        if artifact_type == "campaign_plan":
             logger.info("Routing to CampaignPlanningAgent")
             return self.campaign_agent.generate_campaign(context)
-        if any(kw in request_lower for kw in ["launch", "release", "plan", "drop"]):
-            logger.info("Routing to PlanningAgent for launch plan generation")
-            return self.planning_agent.generate_roadmap(context)
-        logger.info("Default routing to PlanningAgent")
+        logger.info("Routing to PlanningAgent")
         return self.planning_agent.generate_roadmap(context)
