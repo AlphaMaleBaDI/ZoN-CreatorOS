@@ -1259,7 +1259,7 @@ html, body {
     position: sticky;
     bottom: 0;
     background: var(--bg-primary);
-    padding: 8px 0;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
     z-index: 10;
   }
 
