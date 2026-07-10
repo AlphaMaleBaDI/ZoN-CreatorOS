@@ -11,7 +11,7 @@ services:
       - key: PRODUCTION_ENGINE
         value: amd
       - key: FIREWORKS_MODEL
-        value: accounts/fireworks/models/deepseek-v4
+        value: accounts/fireworks/models/deepseek-v4-pro
       - key: FIREWORKS_BASE_URL
         value: https://api.fireworks.ai/inference/v1
       - key: FIREWORKS_API_KEY

@@ -8,7 +8,7 @@ class Settings:
     production_engine: str = "template"
     fireworks_api_key: str = ""
     fireworks_base_url: str = "https://api.fireworks.ai/inference/v1"
-    fireworks_model: str = "accounts/fireworks/models/deepseek-v4-flash"
+    fireworks_model: str = "accounts/fireworks/models/deepseek-v4-pro"
 
 
 _settings: Settings | None = None
@@ -28,7 +28,7 @@ def get_settings() -> Settings:
         ),
         fireworks_model=os.environ.get(
             "FIREWORKS_MODEL",
-            "accounts/fireworks/models/deepseek-v4-flash",
+            "accounts/fireworks/models/deepseek-v4-pro",
         ),
     )
     return _settings
