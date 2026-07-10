@@ -8,7 +8,7 @@ Instead of prompting a language model to produce content, CreatorOS guides a cre
 
 This separation between conversation, reasoning, and production makes the generation engine swappable without changing the creator experience.
 
-<!-- Screenshot: Conversation → Insight → Artifact → Workspace -->
+![CreatorOS Logo](logo.png)
 
 ---
 
