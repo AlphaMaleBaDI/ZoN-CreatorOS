@@ -1,6 +1,9 @@
+import logging
 import os
 import sys
 import uvicorn
+
+logger = logging.getLogger(__name__)
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -639,8 +642,10 @@ class TemplateEngine(ProductionEngine):
 
 
 def get_engine() -> ProductionEngine:
-    engine_name = os.environ.get("PRODUCTION_ENGINE", "template")
-    if engine_name == "amd":
+    from core.config import get_settings
+    settings = get_settings()
+    logger.info("Production engine selected: %s", settings.production_engine)
+    if settings.production_engine == "amd":
         try:
             from core.production_amd import AMDEngine
             return AMDEngine()

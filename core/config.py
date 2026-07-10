@@ -2,6 +2,8 @@ import os
 from dataclasses import dataclass, field
 from dotenv import load_dotenv
 
+load_dotenv()
+
 
 @dataclass
 class Settings:
@@ -18,7 +20,6 @@ def get_settings() -> Settings:
     global _settings
     if _settings is not None:
         return _settings
-    load_dotenv()
     _settings = Settings(
         production_engine=os.environ.get("PRODUCTION_ENGINE", "template"),
         fireworks_api_key=os.environ.get("FIREWORKS_API_KEY", ""),
