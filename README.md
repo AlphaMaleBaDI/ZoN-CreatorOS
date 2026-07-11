@@ -38,6 +38,8 @@ Five conversational turns later, CreatorOS discovers the emotional core of the i
 
 The insight on Turn 3 is the moment the demo is built around. The system has earned the right to infer — it has confirmed emotional core and theme — and the insight is unexpected. The question "Does that resonate?" invites collaboration, not compliance.
 
+![CreatorOS Story](creatoros%20story.png)
+
 ---
 
 ## Architecture
