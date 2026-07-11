@@ -75,7 +75,7 @@ Lineage ─── Artifact dependency chain
 Workspace ─── Visual dashboard (pipeline, lineage, understanding)
 ```
 
-![Architecture](architacture.png)
+![Architecture](architecture.png)
 
 ---
 
